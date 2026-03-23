@@ -143,8 +143,8 @@ const INPUT_STYLE = {
 
 const BTN_PRIMARY = {
   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-  padding: '8px 16px', borderRadius: 10, backgroundColor: colors.primary[500],
-  cursor: 'pointer', minHeight: 36, width: '100%', boxSizing: 'border-box',
+  padding: '13px 16px', borderRadius: 12, backgroundColor: colors.primary[500],
+  cursor: 'pointer', minHeight: 50, width: '100%', boxSizing: 'border-box',
 } as any;
 
 const BTN_SECONDARY = {
@@ -153,11 +153,11 @@ const BTN_SECONDARY = {
 } as any;
 
 const BTN_LABEL_PRIMARY = {
-  fontFamily: F, fontSize: 13, fontWeight: 600, color: '#FFFFFF',
+  fontFamily: F, fontSize: 15, fontWeight: 600, color: '#FFFFFF',
 } as any;
 
 const BTN_LABEL_SECONDARY = {
-  fontFamily: F, fontSize: 13, fontWeight: 600, color: colors.primary[600],
+  fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.primary[600],
 } as any;
 
 const InlineInput: React.FC<{
@@ -654,7 +654,7 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
                     )}
                     <div onClick={() => removeInventoryItem(item.id)} style={{
                       cursor: 'pointer', padding: 8, borderRadius: 10, display: 'flex',
-                      backgroundColor: '#FEF3F2', minWidth: 36, minHeight: 36,
+                      backgroundColor: '#FEF3F2', minWidth: 40, minHeight: 40,
                       alignItems: 'center', justifyContent: 'center',
                     } as any}>
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -742,7 +742,7 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
                       onClick={() => setAddType(t)}
                       style={{
                         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                        padding: '8px 0', borderRadius: 10, cursor: 'pointer', minHeight: 36,
+                        padding: '13px 0', borderRadius: 12, cursor: 'pointer', minHeight: 50,
                         backgroundColor: addType === t ? colors.primary[50] : '#EFF2F7',
                       } as any}
                     >
