@@ -253,8 +253,8 @@ export const ScheduleScreen: React.FC<ScheduleScreenProps> = ({
           display: 'flex',
           flexDirection: 'row',
           gap: 2,
-          paddingLeft: 12,
-          paddingRight: 12,
+          paddingLeft: 20,
+          paddingRight: 20,
           WebkitOverflowScrolling: 'touch',
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
@@ -311,7 +311,7 @@ export const ScheduleScreen: React.FC<ScheduleScreenProps> = ({
 
         {/* ── Day title ── */}
         <div style={{
-          padding: '8px 20px 2px',
+          padding: '12px 20px 4px',
         } as any}>
           <span style={{
             fontFamily: F, fontSize: 15, fontWeight: 600,
@@ -334,7 +334,7 @@ export const ScheduleScreen: React.FC<ScheduleScreenProps> = ({
             /* Empty state */
             <div style={{
               display: 'flex', flexDirection: 'column', alignItems: 'center',
-              justifyContent: 'center', padding: '60px 20px',
+              justifyContent: 'center', padding: '60px 20px 60px 20px',
             } as any}>
               <div style={{
                 width: 64, height: 64, borderRadius: 32,
@@ -379,7 +379,7 @@ export const ScheduleScreen: React.FC<ScheduleScreenProps> = ({
 
               return (
                 <div key={move.id} style={{
-                  paddingLeft: 16, paddingRight: 16,
+                  paddingLeft: 20, paddingRight: 20,
                   marginBottom: 6,
                 } as any}>
 
