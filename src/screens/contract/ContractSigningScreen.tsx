@@ -324,19 +324,11 @@ const CollapsibleSection: React.FC<{
   children: React.ReactNode;
 }> = ({ title, icon, badge, defaultOpen = false, children }) => {
   const [open, setOpen] = useState(defaultOpen);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [contentHeight, setContentHeight] = useState(0);
-
-  useEffect(() => {
-    if (contentRef.current) {
-      setContentHeight(contentRef.current.scrollHeight);
-    }
-  }, [open, contentRef.current?.scrollHeight]);
 
   return (
     <div style={{
       marginBottom: 12, borderRadius: 16,
-      overflow: 'hidden', backgroundColor: '#FFFFFF',
+      backgroundColor: '#FFFFFF',
     } as any}>
       <div
         onClick={() => setOpen(!open)}
@@ -344,7 +336,9 @@ const CollapsibleSection: React.FC<{
           display: 'flex', alignItems: 'center', padding: '14px 20px',
           cursor: 'pointer',
           backgroundColor: open ? colors.primary[50] : '#EFF2F7',
+          borderRadius: open ? '16px 16px 0 0' : 16,
           gap: 10, minHeight: 50, userSelect: 'none',
+          transition: 'border-radius 0.2s ease',
         } as any}
       >
         {icon}
@@ -369,16 +363,15 @@ const CollapsibleSection: React.FC<{
           <path d="M6 9L12 15L18 9" stroke={open ? colors.primary[600] : colors.gray[400]} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </div>
-      <div
-        ref={contentRef}
-        style={{
-          maxHeight: open ? contentHeight || 2000 : 0,
-          overflow: 'hidden',
-          transition: 'max-height 0.3s ease',
-        } as any}
-      >
-        <div style={{ padding: '16px 20px' } as any}>
-          {children}
+      <div style={{
+        display: 'grid',
+        gridTemplateRows: open ? '1fr' : '0fr',
+        transition: 'grid-template-rows 0.3s ease',
+      } as any}>
+        <div style={{ overflow: 'hidden' } as any}>
+          <div style={{ padding: '16px 20px' } as any}>
+            {children}
+          </div>
         </div>
       </div>
     </div>
