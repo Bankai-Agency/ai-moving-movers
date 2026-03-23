@@ -114,15 +114,11 @@ const MONTH_SHORT = [
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
 ];
 
-function getTwoWeekDays(baseDate: Date): Date[] {
+function getMonthDays(year: number, month: number): Date[] {
   const days: Date[] = [];
-  const start = new Date(baseDate);
-  // Go back 3 days from today for context
-  start.setDate(start.getDate() - 3);
-  for (let i = 0; i < 14; i++) {
-    const d = new Date(start);
-    d.setDate(start.getDate() + i);
-    days.push(d);
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  for (let i = 1; i <= daysInMonth; i++) {
+    days.push(new Date(year, month, i));
   }
   return days;
 }
@@ -232,23 +228,37 @@ export const ScheduleScreen: React.FC<ScheduleScreenProps> = ({
 }) => {
   const today = new Date();
   const [selectedDate, setSelectedDate] = useState(today);
-  const calendarRef = useRef<ScrollView>(null);
+  const [viewMonth, setViewMonth] = useState(today.getMonth());
+  const [viewYear, setViewYear] = useState(today.getFullYear());
+  const calendarRef = useRef<HTMLDivElement>(null);
 
-  const allDays = getTwoWeekDays(today);
+  const allDays = getMonthDays(viewYear, viewMonth);
   const selectedKey = formatDateKey(selectedDate);
   const dayMoves = movesByDate[selectedKey] || [];
   const activeMove = dayMoves.find(m => m.status === 'in_progress');
 
-  const selectedMonth = MONTH_NAMES[selectedDate.getMonth()];
-  const selectedYear = selectedDate.getFullYear();
+  const selectedMonth = MONTH_NAMES[viewMonth];
 
-  // Scroll calendar to show today centered on mount
+  const goToPrevMonth = () => {
+    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
+    else { setViewMonth(m => m - 1); }
+  };
+  const goToNextMonth = () => {
+    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); }
+    else { setViewMonth(m => m + 1); }
+  };
+
+  // Scroll calendar to show today / selected day on mount or month change
   useEffect(() => {
-    // Today is at index 3 in our 14-day array, scroll a bit
     setTimeout(() => {
-      calendarRef.current?.scrollTo?.({ x: 0, animated: false });
+      if (!calendarRef.current) return;
+      const todayIdx = allDays.findIndex(d => isSameDay(d, selectedDate));
+      if (todayIdx >= 0) {
+        const scrollX = Math.max(0, todayIdx * 58 - 120);
+        calendarRef.current.scrollTo?.({ left: scrollX, behavior: 'smooth' });
+      }
     }, 100);
-  }, []);
+  }, [viewMonth, viewYear]);
 
   if (Platform.OS !== 'web') {
     return (
@@ -282,33 +292,62 @@ export const ScheduleScreen: React.FC<ScheduleScreenProps> = ({
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
+          userSelect: 'none',
         } as any}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 } as any}>
+          <span style={{
+            fontFamily: F, fontSize: 22, fontWeight: 700,
+            color: colors.gray[900],
+          } as any}>Schedule</span>
+
+          {/* Month nav */}
+          <div style={{
+            display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8,
+          } as any}>
+            <div onClick={goToPrevMonth} style={{
+              width: 32, height: 32, borderRadius: 10,
+              backgroundColor: '#F0F1F3',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer',
+            } as any}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M15 18L9 12L15 6" stroke={colors.gray[600]} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
             <span style={{
-              fontFamily: F, fontSize: 22, fontWeight: 700,
-              color: colors.gray[900],
-            } as any}>Schedule</span>
-            <span style={{
-              fontFamily: F, fontSize: 14, fontWeight: 500,
-              color: colors.gray[400],
-            } as any}>— {selectedMonth}</span>
+              fontFamily: F, fontSize: 15, fontWeight: 600,
+              color: colors.gray[700],
+              minWidth: 80, textAlign: 'center',
+            } as any}>{selectedMonth}{viewYear !== today.getFullYear() ? ` ${viewYear}` : ''}</span>
+            <div onClick={goToNextMonth} style={{
+              width: 32, height: 32, borderRadius: 10,
+              backgroundColor: '#F0F1F3',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer',
+            } as any}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M9 6L15 12L9 18" stroke={colors.gray[600]} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
           </div>
         </div>
 
-        {/* ── Calendar strip (scrollable) ── */}
-        <div style={{
-          padding: '12px 0 6px',
-          overflowX: 'auto',
-          overflowY: 'hidden',
-          display: 'flex',
-          flexDirection: 'row',
-          gap: 2,
-          paddingLeft: 20,
-          paddingRight: 20,
-          WebkitOverflowScrolling: 'touch',
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
-        } as any}>
+        {/* ── Calendar strip (scrollable slider) ── */}
+        <div
+          ref={calendarRef as any}
+          style={{
+            padding: '12px 0 6px',
+            overflowX: 'auto',
+            overflowY: 'hidden',
+            display: 'flex',
+            flexDirection: 'row',
+            gap: 6,
+            paddingLeft: 20,
+            paddingRight: 20,
+            WebkitOverflowScrolling: 'touch',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+            userSelect: 'none',
+          } as any}>
           {allDays.map((d) => {
             const key = formatDateKey(d);
             const isSelected = isSameDay(d, selectedDate);
@@ -326,13 +365,15 @@ export const ScheduleScreen: React.FC<ScheduleScreenProps> = ({
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  padding: '6px 6px 8px',
+                  padding: '6px 8px 8px',
                   borderRadius: 14,
                   backgroundColor: isSelected ? colors.primary[500] : '#F0F1F3',
                   border: isTodayDay && !isSelected ? `1.5px solid ${colors.primary[200]}` : '1.5px solid transparent',
-                  minWidth: 44,
+                  minWidth: 48,
                   transition: 'all 0.2s ease',
                   cursor: 'pointer',
+                  userSelect: 'none',
+                  WebkitUserSelect: 'none',
                 } as any}>
                   <span style={{
                     fontFamily: F, fontSize: 10, fontWeight: 600,
@@ -362,6 +403,7 @@ export const ScheduleScreen: React.FC<ScheduleScreenProps> = ({
         {/* ── Day title ── */}
         <div style={{
           padding: '12px 20px 4px',
+          userSelect: 'none',
         } as any}>
           <span style={{
             fontFamily: F, fontSize: 15, fontWeight: 600,
