@@ -439,10 +439,13 @@ const DetailScreen: React.FC<{
         </span>
       </div>
 
-      {/* ── Filter Chips ── */}
+      {/* ── Filter Chips (horizontal scroll) ── */}
       <div style={{
         display: 'flex', alignItems: 'center', padding: '4px 16px 12px', gap: 8,
+        overflowX: 'auto', WebkitOverflowScrolling: 'touch',
+        scrollbarWidth: 'none', msOverflowStyle: 'none',
       } as any}>
+        <style dangerouslySetInnerHTML={{ __html: `.filter-chips-row::-webkit-scrollbar{display:none}` }} />
         {(['7d', '30d', '90d', 'custom'] as const).map(p => {
           const active = filterPeriod === p;
           const isCustom = p === 'custom';
@@ -458,11 +461,11 @@ const DetailScreen: React.FC<{
                 backgroundColor: active ? colors.primary[500] : '#FFFFFF',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 padding: '0 16px', gap: isCustom ? 6 : 0,
-                ...(isCustom ? { marginLeft: 'auto' } : {}),
+                whiteSpace: 'nowrap', flexShrink: 0,
               } as any}
             >
               {isCustom && (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 } as any}>
                   <rect x="3" y="4" width="18" height="18" rx="2" stroke={active ? '#FFFFFF' : colors.gray[500]} strokeWidth="1.5"/>
                   <path d="M16 2V6M8 2V6M3 10H21" stroke={active ? '#FFFFFF' : colors.gray[500]} strokeWidth="1.5" strokeLinecap="round"/>
                 </svg>
@@ -470,6 +473,7 @@ const DetailScreen: React.FC<{
               <span style={{
                 fontFamily: F, fontSize: 13, fontWeight: 600,
                 color: active ? '#FFFFFF' : colors.gray[600],
+                whiteSpace: 'nowrap',
               } as any}>
                 {p === '7d' ? '7 Days' : p === '30d' ? '30 Days' : p === '90d' ? '90 Days' : 'Custom'}
               </span>
