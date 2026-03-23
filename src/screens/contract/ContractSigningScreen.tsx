@@ -304,31 +304,33 @@ const CollapsibleSection: React.FC<{
   const [open, setOpen] = useState(defaultOpen);
   return (
     <div style={{
-      marginBottom: 12, borderRadius: 12, border: `1px solid ${colors.gray[100]}`,
+      marginBottom: 12, borderRadius: 16, border: `1px solid ${colors.gray[100]}`,
       overflow: 'hidden', backgroundColor: '#FFFFFF',
     } as any}>
       <div
         onClick={() => setOpen(!open)}
         style={{
-          display: 'flex', alignItems: 'center', padding: '12px 14px',
+          display: 'flex', alignItems: 'center', padding: '16px 20px',
           cursor: 'pointer', backgroundColor: open ? colors.primary[25] : '#FAFAFA',
-          gap: 8,
+          gap: 10, minHeight: 56, userSelect: 'none',
         } as any}
       >
         {icon}
-        <span style={{ fontFamily: F, fontSize: 14, fontWeight: 700, color: colors.gray[800], flex: 1 } as any}>
+        <span style={{ fontFamily: F, fontSize: 16, fontWeight: 700, color: colors.gray[800], flex: 1 } as any}>
           {title}
         </span>
         {badge && (
           <span style={{
-            fontFamily: F, fontSize: 11, fontWeight: 600, color: colors.primary[600],
-            backgroundColor: colors.primary[50], padding: '2px 8px', borderRadius: 10,
+            fontFamily: F, fontSize: 12, fontWeight: 600, color: colors.primary[600],
+            backgroundColor: colors.primary[50], padding: '4px 10px', borderRadius: 10,
           } as any}>{badge}</span>
         )}
-        {open ? <ChevronUpIcon /> : <ChevronDownIcon />}
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d={open ? "M6 15L12 9L18 15" : "M6 9L12 15L18 9"} stroke={colors.gray[400]} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
       </div>
       {open && (
-        <div style={{ padding: '12px 14px', borderTop: `1px solid ${colors.gray[100]}` } as any}>
+        <div style={{ padding: '16px 20px', borderTop: `1px solid ${colors.gray[100]}` } as any}>
           {children}
         </div>
       )}
@@ -523,18 +525,6 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
           <div style={{ width: 28 } as any} />
         </div>
 
-        {/* Legal badge */}
-        <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-          padding: '8px 16px', backgroundColor: colors.success[25],
-          borderBottom: `1px solid ${colors.success[100]}`,
-        } as any}>
-          <ShieldIcon />
-          <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.success[700] } as any}>
-            Legally binding under California UETA & federal ESIGN Act
-          </span>
-        </div>
-
         {/* Scrollable body */}
         <div
           onScroll={handleScroll}
@@ -553,35 +543,36 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
           >
             {!editingClient ? (
               <div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 10 } as any}>
-                  <div style={{ display: 'flex', gap: 6 } as any}>
-                    <span style={{ fontFamily: F, fontSize: 12, fontWeight: 600, color: colors.gray[500], width: 60 } as any}>Name:</span>
-                    <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[800] } as any}>{clientData.fullName}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 14 } as any}>
+                  <div style={{ display: 'flex', gap: 10 } as any}>
+                    <span style={{ fontFamily: F, fontSize: 14, fontWeight: 600, color: colors.gray[500], width: 70 } as any}>Name:</span>
+                    <span style={{ fontFamily: F, fontSize: 15, color: colors.gray[800] } as any}>{clientData.fullName}</span>
                   </div>
-                  <div style={{ display: 'flex', gap: 6 } as any}>
-                    <span style={{ fontFamily: F, fontSize: 12, fontWeight: 600, color: colors.gray[500], width: 60 } as any}>Phone:</span>
-                    <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[800] } as any}>{clientData.phone}</span>
+                  <div style={{ display: 'flex', gap: 10 } as any}>
+                    <span style={{ fontFamily: F, fontSize: 14, fontWeight: 600, color: colors.gray[500], width: 70 } as any}>Phone:</span>
+                    <span style={{ fontFamily: F, fontSize: 15, color: colors.gray[800] } as any}>{clientData.phone}</span>
                   </div>
-                  <div style={{ display: 'flex', gap: 6 } as any}>
-                    <span style={{ fontFamily: F, fontSize: 12, fontWeight: 600, color: colors.gray[500], width: 60 } as any}>Email:</span>
-                    <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[800] } as any}>{clientData.email}</span>
+                  <div style={{ display: 'flex', gap: 10 } as any}>
+                    <span style={{ fontFamily: F, fontSize: 14, fontWeight: 600, color: colors.gray[500], width: 70 } as any}>Email:</span>
+                    <span style={{ fontFamily: F, fontSize: 15, color: colors.gray[800] } as any}>{clientData.email}</span>
                   </div>
                   {clientData.address && (
-                    <div style={{ display: 'flex', gap: 6 } as any}>
-                      <span style={{ fontFamily: F, fontSize: 12, fontWeight: 600, color: colors.gray[500], width: 60 } as any}>Address:</span>
-                      <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[800] } as any}>{clientData.address}</span>
+                    <div style={{ display: 'flex', gap: 10 } as any}>
+                      <span style={{ fontFamily: F, fontSize: 14, fontWeight: 600, color: colors.gray[500], width: 70 } as any}>Address:</span>
+                      <span style={{ fontFamily: F, fontSize: 15, color: colors.gray[800] } as any}>{clientData.address}</span>
                     </div>
                   )}
                 </div>
                 <div
                   onClick={() => setEditingClient(true)}
                   style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px',
-                    borderRadius: 8, backgroundColor: colors.primary[50], cursor: 'pointer',
+                    display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 16px',
+                    borderRadius: 12, backgroundColor: colors.primary[50], cursor: 'pointer',
+                    minHeight: 44,
                   } as any}
                 >
                   <EditPenIcon />
-                  <span style={{ fontFamily: F, fontSize: 12, fontWeight: 600, color: colors.primary[600] } as any}>Edit Client Info</span>
+                  <span style={{ fontFamily: F, fontSize: 14, fontWeight: 600, color: colors.primary[600] } as any}>Edit Client Info</span>
                 </div>
               </div>
             ) : (
@@ -618,24 +609,31 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
                 </span>
                 {items.map(item => (
                   <div key={item.id} style={{
-                    display: 'flex', alignItems: 'center', padding: '8px 10px',
-                    backgroundColor: '#FAFAFA', borderRadius: 8, marginBottom: 4, gap: 8,
+                    display: 'flex', alignItems: 'center', padding: '12px 14px',
+                    backgroundColor: '#FAFAFA', borderRadius: 12, marginBottom: 6, gap: 10,
+                    minHeight: 48,
                   } as any}>
-                    <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[800], flex: 1 } as any}>
+                    <span style={{ fontFamily: F, fontSize: 15, color: colors.gray[800], flex: 1 } as any}>
                       {item.name}
                     </span>
-                    <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[500], minWidth: 35, textAlign: 'center' } as any}>
+                    <span style={{ fontFamily: F, fontSize: 14, color: colors.gray[500], minWidth: 35, textAlign: 'center' } as any}>
                       x{item.quantity}
                     </span>
                     {item.tag && (
                       <span style={{
-                        fontFamily: F, fontSize: 10, fontWeight: 600, color: colors.gray[600],
+                        fontFamily: F, fontSize: 12, fontWeight: 600, color: colors.gray[600],
                         backgroundColor: item.tag === 'Fragile' ? '#FEF3F2' : item.tag === 'Large' ? '#EFF8FF' : '#FFF6ED',
-                        padding: '2px 6px', borderRadius: 4,
+                        padding: '4px 10px', borderRadius: 8,
                       } as any}>{item.tag}</span>
                     )}
-                    <div onClick={() => removeInventoryItem(item.id)} style={{ cursor: 'pointer', padding: 4, borderRadius: 6, display: 'flex' } as any}>
-                      <TrashIcon />
+                    <div onClick={() => removeInventoryItem(item.id)} style={{
+                      cursor: 'pointer', padding: 10, borderRadius: 10, display: 'flex',
+                      backgroundColor: '#FEF3F2', minWidth: 40, minHeight: 40,
+                      alignItems: 'center', justifyContent: 'center',
+                    } as any}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path d="M3 6H21M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.5523 5 20V6" stroke="#EF4444" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
                     </div>
                   </div>
                 ))}
@@ -658,23 +656,30 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
           >
             {additionalCharges.map(ch => (
               <div key={ch.id} style={{
-                display: 'flex', alignItems: 'center', padding: '8px 10px',
-                backgroundColor: '#FAFAFA', borderRadius: 8, marginBottom: 4, gap: 8,
+                display: 'flex', alignItems: 'center', padding: '12px 14px',
+                backgroundColor: '#FAFAFA', borderRadius: 12, marginBottom: 6, gap: 10,
+                minHeight: 48,
               } as any}>
                 <span style={{
-                  fontFamily: F, fontSize: 10, fontWeight: 600,
-                  color: ch.type === 'furniture' ? colors.primary[600] : colors.primary[600],
-                  backgroundColor: ch.type === 'furniture' ? colors.primary[50] : colors.primary[50],
-                  padding: '2px 6px', borderRadius: 4, textTransform: 'uppercase',
+                  fontFamily: F, fontSize: 12, fontWeight: 600,
+                  color: colors.primary[600],
+                  backgroundColor: colors.primary[50],
+                  padding: '4px 10px', borderRadius: 8, textTransform: 'uppercase',
                 } as any}>{ch.type}</span>
-                <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[800], flex: 1 } as any}>
+                <span style={{ fontFamily: F, fontSize: 15, color: colors.gray[800], flex: 1 } as any}>
                   {ch.name}
                 </span>
-                <span style={{ fontFamily: F, fontSize: 13, fontWeight: 700, color: colors.gray[800] } as any}>
+                <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[800] } as any}>
                   ${ch.price.toFixed(2)}
                 </span>
-                <div onClick={() => removeAdditionalCharge(ch.id)} style={{ cursor: 'pointer', padding: 4, borderRadius: 6, display: 'flex' } as any}>
-                  <TrashIcon />
+                <div onClick={() => removeAdditionalCharge(ch.id)} style={{
+                  cursor: 'pointer', padding: 10, borderRadius: 10, display: 'flex',
+                  backgroundColor: '#FEF3F2', minWidth: 40, minHeight: 40,
+                  alignItems: 'center', justifyContent: 'center',
+                } as any}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 6H21M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.5523 5 20V6" stroke="#EF4444" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </div>
               </div>
             ))}
@@ -951,19 +956,6 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
                   </span>
                 </div>
 
-                <div style={{
-                  marginTop: 12, padding: '10px 14px', borderRadius: 10,
-                  backgroundColor: '#F9FAFB', border: `1px solid ${colors.gray[100]}`,
-                } as any}>
-                  <span style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: colors.gray[500], display: 'block', marginBottom: 4 } as any}>
-                    AUDIT TRAIL
-                  </span>
-                  <span style={{ fontFamily: 'monospace', fontSize: 11, color: colors.gray[400], lineHeight: '16px' } as any}>
-                    Timestamp: {new Date().toISOString()}<br/>
-                    Device: {typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 60) + '...' : 'Mobile'}<br/>
-                    Contract: {currentContract.contractNumber}
-                  </span>
-                </div>
               </div>
             </>
           )}

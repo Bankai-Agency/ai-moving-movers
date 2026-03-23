@@ -205,22 +205,22 @@ export function generateContractHtml(
     by and between:
   </div>
 
-  <div style="display: flex; gap: 16px; margin-bottom: 20px;">
-    <div style="flex: 1; background: #F9FAFB; border-radius: 10px; padding: 12px;">
-      <div style="font-size: 11px; font-weight: 600; color: #667085; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Service Provider ("Mover")</div>
-      <div style="font-weight: 600;">${mover.companyName}</div>
-      <div>${mover.fullName}</div>
-      <div style="font-size: 12px; color: #475467;">${mover.phone}</div>
-      <div style="font-size: 12px; color: #475467;">${mover.email}</div>
-      ${mover.license ? `<div style="font-size: 12px; color: #475467;">License: ${mover.license}</div>` : ''}
-      ${mover.insurancePolicy ? `<div style="font-size: 12px; color: #475467;">Insurance: ${mover.insurancePolicy}</div>` : ''}
+  <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+    <div style="background: #F9FAFB; border-radius: 12px; padding: 14px 16px;">
+      <div style="font-size: 11px; font-weight: 600; color: #667085; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Service Provider ("Mover")</div>
+      <div style="font-weight: 700; font-size: 15px; margin-bottom: 4px;">${mover.companyName}</div>
+      <div style="font-size: 14px; margin-bottom: 2px;">${mover.fullName}</div>
+      <div style="font-size: 13px; color: #475467;">${mover.phone}</div>
+      <div style="font-size: 13px; color: #475467;">${mover.email}</div>
+      ${mover.license ? `<div style="font-size: 13px; color: #475467;">License: ${mover.license}</div>` : ''}
+      ${mover.insurancePolicy ? `<div style="font-size: 13px; color: #475467;">Insurance: ${mover.insurancePolicy}</div>` : ''}
     </div>
-    <div style="flex: 1; background: #F9FAFB; border-radius: 10px; padding: 12px;">
-      <div style="font-size: 11px; font-weight: 600; color: #667085; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Client ("Customer")</div>
-      <div style="font-weight: 600;">${client.fullName}</div>
-      <div style="font-size: 12px; color: #475467;">${client.phone}</div>
-      <div style="font-size: 12px; color: #475467;">${client.email}</div>
-      ${client.address ? `<div style="font-size: 12px; color: #475467;">${client.address}</div>` : ''}
+    <div style="background: #F9FAFB; border-radius: 12px; padding: 14px 16px;">
+      <div style="font-size: 11px; font-weight: 600; color: #667085; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Client ("Customer")</div>
+      <div style="font-weight: 700; font-size: 15px; margin-bottom: 4px;">${client.fullName}</div>
+      <div style="font-size: 13px; color: #475467;">${client.phone}</div>
+      <div style="font-size: 13px; color: #475467;">${client.email}</div>
+      ${client.address ? `<div style="font-size: 13px; color: #475467;">${client.address}</div>` : ''}
     </div>
   </div>
 
