@@ -301,7 +301,7 @@ const StatusBadge = ({ status }: { status: string }) => {
 
 /* Row renderers per metric type */
 const OrderRow = ({ row }: { row: string[] }) => (
-  <div style={{ backgroundColor: '#FFFFFF', borderRadius: 14, padding: '14px 16px', marginBottom: 8 } as any}>
+  <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '14px 16px', marginBottom: 8 } as any}>
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 } as any}>
       <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900] } as any}>{row[1]}</span>
       <StatusBadge status={row[4]} />
@@ -315,7 +315,7 @@ const OrderRow = ({ row }: { row: string[] }) => (
 );
 
 const RatingRow = ({ row }: { row: string[] }) => (
-  <div style={{ backgroundColor: '#FFFFFF', borderRadius: 14, padding: '14px 16px', marginBottom: 8 } as any}>
+  <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '14px 16px', marginBottom: 8 } as any}>
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 } as any}>
       <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900] } as any}>{row[1]}</span>
       <span style={{ fontFamily: F, fontSize: 14, fontWeight: 700, color: colors.warning[600] } as any}>{row[3]}</span>
@@ -327,7 +327,7 @@ const RatingRow = ({ row }: { row: string[] }) => (
 );
 
 const ConversionRow = ({ row }: { row: string[] }) => (
-  <div style={{ backgroundColor: '#FFFFFF', borderRadius: 14, padding: '14px 16px', marginBottom: 8 } as any}>
+  <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '14px 16px', marginBottom: 8 } as any}>
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 } as any}>
       <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900] } as any}>{row[0]}</span>
       <span style={{
@@ -346,7 +346,7 @@ const ConversionRow = ({ row }: { row: string[] }) => (
 const GenericTwoLineRow = ({ row, valueFn }: { row: string[]; valueFn?: (r: string[]) => { main: string; mainColor?: string; sub: string } }) => {
   const v = valueFn ? valueFn(row) : { main: row[row.length - 1], sub: row.slice(1, -1).join(' · ') };
   return (
-    <div style={{ backgroundColor: '#FFFFFF', borderRadius: 14, padding: '14px 16px', marginBottom: 8 } as any}>
+    <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '14px 16px', marginBottom: 8 } as any}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 } as any}>
         <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900] } as any}>{row[0]}</span>
         <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: v.mainColor || colors.gray[900] } as any}>{v.main}</span>
@@ -427,7 +427,7 @@ const DetailScreen: React.FC<{
         backgroundColor: '#F5F5F7',
       } as any}>
         <div onClick={onBack} style={{
-          width: 36, height: 36, borderRadius: 10,
+          width: 36, height: 36, borderRadius: 12,
           backgroundColor: '#EFF2F7',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           cursor: 'pointer', flexShrink: 0,
@@ -457,7 +457,7 @@ const DetailScreen: React.FC<{
                 else { setFilterPeriod(p); setShowCustomPicker(false); }
               }}
               style={{
-                height: 36, borderRadius: 10, cursor: 'pointer',
+                height: 36, borderRadius: 12, cursor: 'pointer',
                 backgroundColor: active ? colors.primary[500] : '#FFFFFF',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 padding: '0 16px', gap: isCustom ? 6 : 0,
@@ -486,7 +486,7 @@ const DetailScreen: React.FC<{
       {showCustomPicker && (
         <div style={{
           margin: '0 16px 12px', padding: 16, backgroundColor: '#FFFFFF',
-          borderRadius: 14,
+          borderRadius: 16,
         } as any}>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 12 } as any}>
             <div style={{ flex: 1 } as any}>
@@ -496,7 +496,7 @@ const DetailScreen: React.FC<{
                 value={customFrom}
                 onChange={(e: any) => setCustomFrom(e.target.value)}
                 style={{
-                  width: '100%', padding: '10px 12px', borderRadius: 10,
+                  width: '100%', padding: '10px 12px', borderRadius: 12,
                   backgroundColor: '#EFF2F7', fontFamily: F, fontSize: 14,
                   color: colors.gray[900], border: 'none', outline: 'none',
                   boxSizing: 'border-box',
@@ -511,7 +511,7 @@ const DetailScreen: React.FC<{
                 value={customTo}
                 onChange={(e: any) => setCustomTo(e.target.value)}
                 style={{
-                  width: '100%', padding: '10px 12px', borderRadius: 10,
+                  width: '100%', padding: '10px 12px', borderRadius: 12,
                   backgroundColor: '#EFF2F7', fontFamily: F, fontSize: 14,
                   color: colors.gray[900], border: 'none', outline: 'none',
                   boxSizing: 'border-box',
@@ -522,7 +522,7 @@ const DetailScreen: React.FC<{
           <div
             onClick={() => setShowCustomPicker(false)}
             style={{
-              width: '100%', height: 44, borderRadius: 10,
+              width: '100%', height: 44, borderRadius: 12,
               backgroundColor: colors.primary[500], cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               boxSizing: 'border-box',
@@ -541,7 +541,7 @@ const DetailScreen: React.FC<{
         } as any}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 } as any}>
             <div style={{
-              width: 48, height: 48, borderRadius: 14,
+              width: 48, height: 48, borderRadius: 16,
               backgroundColor: `${config.color}12`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0,
@@ -558,7 +558,7 @@ const DetailScreen: React.FC<{
             </div>
             <span style={{
               fontFamily: F, fontSize: 12, fontWeight: 600, color: colors.success[500],
-              backgroundColor: colors.success[50], padding: '6px 12px', borderRadius: 10,
+              backgroundColor: colors.success[50], padding: '6px 12px', borderRadius: 12,
             } as any}>
               ↑ Trending
             </span>
@@ -651,7 +651,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                   onClick={() => setDrillDown('revenue')}
                   style={{
                     background: `linear-gradient(135deg, ${colors.primary[500]}, ${colors.primary[700] || '#1570CD'})`,
-                    borderRadius: 20, padding: '24px 20px', marginBottom: 12, cursor: 'pointer',
+                    borderRadius: 16, padding: '24px 20px', marginBottom: 12, cursor: 'pointer',
                   } as any}
                 >
                   <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' } as any}>
@@ -684,7 +684,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                         key={p}
                         onClick={(e: any) => { e.stopPropagation(); setPeriod(p); }}
                         style={{
-                          padding: '6px 16px', borderRadius: 8, cursor: 'pointer',
+                          padding: '6px 16px', borderRadius: 10, cursor: 'pointer',
                           backgroundColor: period === p ? 'rgba(255,255,255,0.25)' : 'transparent',
                         } as any}
                       >
@@ -855,18 +855,19 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
 
                 {/* ── On-time & Cancellation ── */}
                 <div style={{ display: 'flex', flexDirection: 'row', gap: 10, marginBottom: 12 } as any}>
-                  <div onClick={() => setDrillDown('onTime')} style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px 14px', cursor: 'pointer' } as any}>
-                    <span style={{ fontFamily: F, fontSize: 28, fontWeight: 800, color: colors.success[500], display: 'block' } as any}>{d.onTime}</span>
-                    <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.gray[400], display: 'block', marginTop: 4 } as any}>On-time Rate</span>
-                  </div>
-                  <div onClick={() => setDrillDown('cancellation')} style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px 14px', cursor: 'pointer' } as any}>
-                    <span style={{ fontFamily: F, fontSize: 28, fontWeight: 800, color: colors.error[500], display: 'block' } as any}>{d.cancellation}</span>
-                    <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.gray[400], display: 'block', marginTop: 4 } as any}>Cancellation Rate</span>
-                  </div>
-                  <div onClick={() => setDrillDown('avgTime')} style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px 14px', cursor: 'pointer' } as any}>
-                    <span style={{ fontFamily: F, fontSize: 28, fontWeight: 800, color: colors.primary[500], display: 'block' } as any}>{d.avgMoveTime}</span>
-                    <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.gray[400], display: 'block', marginTop: 4 } as any}>Avg Move Time</span>
-                  </div>
+                  {[
+                    { key: 'onTime' as MetricKey, value: d.onTime, label: 'On-time Rate', color: colors.success[500] },
+                    { key: 'cancellation' as MetricKey, value: d.cancellation, label: 'Cancellation', color: colors.error[500] },
+                    { key: 'avgTime' as MetricKey, value: d.avgMoveTime, label: 'Avg Move Time', color: colors.primary[500] },
+                  ].map(stat => (
+                    <div key={stat.key} onClick={() => setDrillDown(stat.key)} style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px 14px', cursor: 'pointer' } as any}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' } as any}>
+                        <span style={{ fontFamily: F, fontSize: 24, fontWeight: 800, color: stat.color, display: 'block' } as any}>{stat.value}</span>
+                        <ChevronRightIcon color={colors.gray[200]} />
+                      </div>
+                      <span style={{ fontFamily: F, fontSize: 11, fontWeight: 500, color: colors.gray[400], display: 'block', marginTop: 4 } as any}>{stat.label}</span>
+                    </div>
+                  ))}
                 </div>
 
               </div>
