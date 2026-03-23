@@ -27,6 +27,10 @@ import { TabBar, TabId } from './TabBar';
 
 const F = fontFamily.primary;
 
+/* Semantic accent colors (not in core palette but used consistently) */
+const ACCENT_PURPLE = '#7C3AED';   // avgCheck accent
+const ACCENT_GREEN_LIGHT = '#86EFAC'; // hero trend text on dark bg
+
 /* ═══════════════════════════════════════════
    Types
    ═══════════════════════════════════════════ */
@@ -163,8 +167,8 @@ const METRIC_CONFIG: Record<MetricKey, DetailConfig> = {
   },
   avgCheck: {
     title: 'Avg Check',
-    color: '#7C3AED',
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 1V23M17 5H9.5C7.01 5 5 7.01 5 9.5S7.01 14 9.5 14H14.5C16.99 14 19 16.01 19 18.5S16.99 23 14.5 23H5" stroke="#7C3AED" strokeWidth="1.8" strokeLinecap="round"/></svg>,
+    color: ACCENT_PURPLE,
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 1V23M17 5H9.5C7.01 5 5 7.01 5 9.5S7.01 14 9.5 14H14.5C16.99 14 19 16.01 19 18.5S16.99 23 14.5 23H5" stroke={ACCENT_PURPLE} strokeWidth="1.8" strokeLinecap="round"/></svg>,
   },
   revenue: {
     title: 'Revenue',
@@ -294,7 +298,7 @@ const StatusBadge = ({ status }: { status: string }) => {
   return (
     <span style={{
       fontFamily: F, fontSize: 12, fontWeight: 600, color: fg,
-      backgroundColor: bg, padding: '4px 10px', borderRadius: 8,
+      backgroundColor: bg, padding: '4px 10px', borderRadius: 12,
     } as any}>{status}</span>
   );
 };
@@ -522,7 +526,7 @@ const DetailScreen: React.FC<{
           <div
             onClick={() => setShowCustomPicker(false)}
             style={{
-              width: '100%', height: 44, borderRadius: 12,
+              width: '100%', height: 50, borderRadius: 12,
               backgroundColor: colors.primary[500], cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               boxSizing: 'border-box',
@@ -603,7 +607,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' } as any}>
         <div style={{
-          width: 36, height: 36, borderRadius: 10,
+          width: 36, height: 36, borderRadius: 12,
           backgroundColor: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center',
         } as any}>
           {icon}
@@ -662,7 +666,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                       <span style={{ fontFamily: F, fontSize: 36, fontWeight: 800, color: '#FFFFFF', display: 'block', marginTop: 4, letterSpacing: -1 } as any}>
                         ${d.revenue.toLocaleString()}
                       </span>
-                      <span style={{ fontFamily: F, fontSize: 13, fontWeight: 600, color: '#86EFAC', display: 'block', marginTop: 6 } as any}>
+                      <span style={{ fontFamily: F, fontSize: 13, fontWeight: 600, color: ACCENT_GREEN_LIGHT, display: 'block', marginTop: 6 } as any}>
                         {d.revenueTrend}
                       </span>
                     </div>
@@ -684,7 +688,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                         key={p}
                         onClick={(e: any) => { e.stopPropagation(); setPeriod(p); }}
                         style={{
-                          padding: '6px 16px', borderRadius: 10, cursor: 'pointer',
+                          padding: '6px 16px', borderRadius: 12, cursor: 'pointer',
                           backgroundColor: period === p ? 'rgba(255,255,255,0.25)' : 'transparent',
                         } as any}
                       >
@@ -728,9 +732,9 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                     label="Avg Check"
                     value={d.avgCheck}
                     sub={d.avgCheckSub}
-                    color="#7C3AED"
+                    color={ACCENT_PURPLE}
                     metric="avgCheck"
-                    icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 1V23M17 5H9.5C7.01 5 5 7.01 5 9.5S7.01 14 9.5 14H14.5C16.99 14 19 16.01 19 18.5S16.99 23 14.5 23H5" stroke="#7C3AED" strokeWidth="1.8" strokeLinecap="round"/></svg>}
+                    icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 1V23M17 5H9.5C7.01 5 5 7.01 5 9.5S7.01 14 9.5 14H14.5C16.99 14 19 16.01 19 18.5S16.99 23 14.5 23H5" stroke={ACCENT_PURPLE} strokeWidth="1.8" strokeLinecap="round"/></svg>}
                   />
                 </div>
 
@@ -810,7 +814,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                     } as any}>
                       {/* Rank */}
                       <div style={{
-                        width: 28, height: 28, borderRadius: 8,
+                        width: 28, height: 28, borderRadius: 12,
                         backgroundColor: i === 0 ? colors.warning[50] : colors.gray[50],
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         flexShrink: 0,
@@ -825,7 +829,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
 
                       {/* Avatar */}
                       <div style={{
-                        width: 36, height: 36, borderRadius: 10,
+                        width: 36, height: 36, borderRadius: 12,
                         backgroundColor: colors.primary[50],
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         flexShrink: 0,
