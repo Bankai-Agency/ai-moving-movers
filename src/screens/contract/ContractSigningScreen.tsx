@@ -296,7 +296,7 @@ const SignaturePad: React.FC<{
         style={{
           width: '100%', height: 200, borderRadius: 12,
           border: 'none',
-          backgroundColor: hasDrawn ? colors.primary[25] : '#F0F1F3',
+          backgroundColor: hasDrawn ? colors.primary[25] : '#EFF2F7',
           cursor: 'crosshair', touchAction: 'none',
         } as any}
       />
@@ -343,8 +343,8 @@ const CollapsibleSection: React.FC<{
         style={{
           display: 'flex', alignItems: 'center', padding: '14px 20px',
           cursor: 'pointer',
-          backgroundColor: open ? colors.primary[50] : '#F0F1F3',
-          gap: 10, minHeight: 48, userSelect: 'none',
+          backgroundColor: open ? colors.primary[50] : '#EFF2F7',
+          gap: 10, minHeight: 50, userSelect: 'none',
         } as any}
       >
         {icon}
@@ -642,9 +642,9 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
                 </span>
                 {items.map(item => (
                   <div key={item.id} style={{
-                    display: 'flex', alignItems: 'center', padding: '12px 14px',
-                    backgroundColor: '#FAFAFA', borderRadius: 12, marginBottom: 6, gap: 10,
-                    minHeight: 48,
+                    display: 'flex', alignItems: 'center', padding: '10px 14px',
+                    backgroundColor: '#EFF2F7', borderRadius: 12, marginBottom: 6, gap: 10,
+                    minHeight: 50,
                   } as any}>
                     <span style={{ fontFamily: F, fontSize: 15, color: colors.gray[800], flex: 1 } as any}>
                       {item.name}
@@ -689,9 +689,9 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
           >
             {additionalCharges.map(ch => (
               <div key={ch.id} style={{
-                display: 'flex', alignItems: 'center', padding: '12px 14px',
-                backgroundColor: '#FAFAFA', borderRadius: 12, marginBottom: 6, gap: 10,
-                minHeight: 48,
+                display: 'flex', alignItems: 'center', padding: '10px 14px',
+                backgroundColor: '#EFF2F7', borderRadius: 12, marginBottom: 6, gap: 10,
+                minHeight: 50,
               } as any}>
                 <span style={{
                   fontFamily: F, fontSize: 12, fontWeight: 600,
@@ -706,8 +706,8 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
                   ${ch.price.toFixed(2)}
                 </span>
                 <div onClick={() => removeAdditionalCharge(ch.id)} style={{
-                  cursor: 'pointer', padding: 10, borderRadius: 10, display: 'flex',
-                  backgroundColor: '#FEF3F2', minWidth: 40, minHeight: 40,
+                  cursor: 'pointer', padding: 8, borderRadius: 10, display: 'flex',
+                  backgroundColor: '#FEF3F2', minWidth: 36, minHeight: 36,
                   alignItems: 'center', justifyContent: 'center',
                 } as any}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -954,7 +954,7 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
                   style={{
                     display: 'flex', flexDirection: 'row', alignItems: 'flex-start', gap: 10,
                     cursor: 'pointer', padding: '12px 14px',
-                    borderRadius: 12, backgroundColor: consentChecked ? colors.primary[25] : '#F0F1F3',
+                    borderRadius: 12, backgroundColor: consentChecked ? colors.primary[25] : '#EFF2F7',
                   } as any}
                 >
                   <div style={{ flexShrink: 0, marginTop: 1 } as any}>
