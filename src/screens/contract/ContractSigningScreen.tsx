@@ -150,9 +150,9 @@ const InlineInput: React.FC<{
       onChange={(e: any) => onChange(e.target.value)}
       placeholder={placeholder || ''}
       style={{
-        width: '100%', padding: '8px 10px', borderRadius: 8,
-        border: `1px solid ${colors.gray[200]}`, fontFamily: F, fontSize: 13,
-        color: colors.gray[900], outline: 'none', backgroundColor: '#FAFAFA',
+        width: '100%', padding: '10px 12px', borderRadius: 10,
+        border: 'none', fontFamily: F, fontSize: 14,
+        color: colors.gray[900], outline: 'none', backgroundColor: '#F0F1F3',
         boxSizing: 'border-box',
       } as any}
     />
@@ -273,14 +273,14 @@ const SignaturePad: React.FC<{
         onTouchEnd={endDraw}
         style={{
           width: '100%', height: 200, borderRadius: 12,
-          border: `1.5px dashed ${hasDrawn ? colors.primary[300] : colors.gray[200]}`,
-          backgroundColor: hasDrawn ? '#FAFCFF' : '#FAFAFA',
+          border: 'none',
+          backgroundColor: hasDrawn ? colors.primary[25] : '#F0F1F3',
           cursor: 'crosshair', touchAction: 'none',
         } as any}
       />
 
       {!hasDrawn && (
-        <div style={{ position: 'absolute', bottom: 30, left: 24, right: 24, borderBottom: `1px solid ${colors.gray[200]}` } as any}>
+        <div style={{ position: 'absolute', bottom: 30, left: 24, right: 24, height: 1, backgroundColor: colors.gray[200] } as any}>
           <span style={{ fontFamily: F, fontSize: 11, color: colors.gray[300], position: 'absolute', right: 0, bottom: 4 } as any}>
             Sign here
           </span>
@@ -306,7 +306,6 @@ const CollapsibleSection: React.FC<{
     <div style={{
       marginBottom: 12, borderRadius: 16,
       overflow: 'hidden', backgroundColor: '#FFFFFF',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
     } as any}>
       <div
         onClick={() => setOpen(!open)}
@@ -315,7 +314,6 @@ const CollapsibleSection: React.FC<{
           cursor: 'pointer',
           backgroundColor: open ? colors.primary[50] : '#F0F1F3',
           gap: 10, minHeight: 56, userSelect: 'none',
-          borderBottom: open ? `1px solid ${colors.primary[100]}` : 'none',
         } as any}
       >
         <div style={{
@@ -587,7 +585,6 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                     padding: '12px 16px', borderRadius: 12, backgroundColor: colors.primary[50],
                     cursor: 'pointer', minHeight: 44, width: '100%', boxSizing: 'border-box',
-                    border: `1px solid ${colors.primary[100]}`,
                   } as any}
                 >
                   <EditPenIcon />
@@ -732,7 +729,7 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
             {showAddModal && (
               <div style={{
                 marginTop: 8, padding: 14, borderRadius: 12,
-                border: `1.5px solid ${colors.primary[200]}`, backgroundColor: colors.primary[25],
+                backgroundColor: colors.primary[25],
               } as any}>
                 <span style={{ fontFamily: F, fontSize: 14, fontWeight: 700, color: colors.gray[800], display: 'block', marginBottom: 12 } as any}>
                   Add Item or Service
@@ -747,8 +744,7 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
                       style={{
                         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                         padding: '10px 0', borderRadius: 10, cursor: 'pointer',
-                        border: `1.5px solid ${addType === t ? colors.primary[400] : colors.gray[200]}`,
-                        backgroundColor: addType === t ? colors.primary[50] : '#FFFFFF',
+                        backgroundColor: addType === t ? colors.primary[50] : '#F0F1F3',
                       } as any}
                     >
                       {t === 'furniture' ? <FurnitureIcon /> : <ServiceIcon />}
@@ -804,7 +800,7 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
                     style={{
                       flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
                       padding: '12px 0', borderRadius: 12, cursor: 'pointer', minHeight: 44,
-                      border: `1px solid ${colors.gray[200]}`, backgroundColor: '#FFFFFF',
+                      backgroundColor: '#F0F1F3',
                     } as any}
                   >
                     <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[600] } as any}>Cancel</span>
@@ -827,7 +823,7 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
             {additionalCharges.length > 0 && (
               <div style={{
                 marginTop: 12, padding: '10px 12px', borderRadius: 8,
-                backgroundColor: '#F0F9FF', border: `1px solid ${colors.primary[100]}`,
+                backgroundColor: '#F0F9FF',
               } as any}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 } as any}>
                   <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[500] } as any}>Base price:</span>
@@ -837,7 +833,7 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
                   <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[500] } as any}>Additional:</span>
                   <span style={{ fontFamily: F, fontSize: 12, fontWeight: 600, color: colors.primary[600] } as any}>+${additionalTotal.toFixed(2)}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: `1px solid ${colors.primary[100]}`, paddingTop: 4 } as any}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 6, marginTop: 4, backgroundColor: '#F0F9FF' } as any}>
                   <span style={{ fontFamily: F, fontSize: 13, fontWeight: 700, color: colors.gray[800] } as any}>Total:</span>
                   <span style={{ fontFamily: F, fontSize: 13, fontWeight: 700, color: colors.gray[900] } as any}>${grandTotal.toFixed(2)}</span>
                 </div>
@@ -848,7 +844,7 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
           {/* ═══ CONTRACT HTML ═══ */}
           <div style={{
             backgroundColor: '#FFFFFF', borderRadius: 12, padding: 16,
-            border: `1px solid ${colors.gray[100]}`, marginBottom: 16,
+            marginBottom: 16,
           } as any}>
             <div
               dangerouslySetInnerHTML={{ __html: currentContract.contractHtml }}
@@ -860,7 +856,6 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
           {!scrolledToBottom && (
             <div style={{
               textAlign: 'center', padding: '12px 0 8px',
-              borderTop: `1px dashed ${colors.gray[200]}`,
             } as any}>
               <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.gray[400] } as any}>
                 Scroll down to review the full contract before signing
@@ -874,7 +869,7 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
               {/* ── MOVER SIGNATURE ── */}
               <div style={{
                 marginBottom: 12, backgroundColor: '#FFFFFF',
-                borderRadius: 12, padding: 16, border: `1px solid ${colors.gray[100]}`,
+                borderRadius: 12, padding: 16,
               } as any}>
                 <div style={{ textAlign: 'center', marginBottom: 16 } as any}>
                   <span style={{
@@ -904,9 +899,9 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
                     placeholder={signerName}
                     style={{
                       width: '100%', padding: '12px 14px', borderRadius: 12,
-                      border: `1.5px solid ${moverTypedName ? colors.primary[300] : colors.gray[200]}`,
+                      border: 'none',
                       fontFamily: F, fontSize: 15, fontWeight: 500, color: colors.gray[900],
-                      outline: 'none', backgroundColor: '#FAFAFA', boxSizing: 'border-box',
+                      outline: 'none', backgroundColor: moverTypedName ? colors.primary[25] : '#F0F1F3', boxSizing: 'border-box',
                     } as any}
                   />
                 </div>
@@ -915,7 +910,7 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
               {/* ── CLIENT SIGNATURE ── */}
               <div style={{
                 marginBottom: 12, backgroundColor: '#FFFFFF',
-                borderRadius: 12, padding: 16, border: `1px solid ${colors.gray[100]}`,
+                borderRadius: 12, padding: 16,
               } as any}>
                 <div style={{ textAlign: 'center', marginBottom: 16 } as any}>
                   <span style={{
@@ -945,9 +940,9 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
                     placeholder={clientName}
                     style={{
                       width: '100%', padding: '12px 14px', borderRadius: 12,
-                      border: `1.5px solid ${clientTypedName ? colors.primary[600] : colors.gray[200]}`,
+                      border: 'none',
                       fontFamily: F, fontSize: 15, fontWeight: 500, color: colors.gray[900],
-                      outline: 'none', backgroundColor: '#FAFAFA', boxSizing: 'border-box',
+                      outline: 'none', backgroundColor: clientTypedName ? colors.primary[25] : '#F0F1F3', boxSizing: 'border-box',
                     } as any}
                   />
                 </div>
@@ -956,15 +951,14 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
               {/* ── CONSENT & AUDIT TRAIL ── */}
               <div style={{
                 marginBottom: 12, backgroundColor: '#FFFFFF',
-                borderRadius: 12, padding: 16, border: `1px solid ${colors.gray[100]}`,
+                borderRadius: 12, padding: 16,
               } as any}>
                 <div
                   onClick={() => setConsentChecked(!consentChecked)}
                   style={{
                     display: 'flex', flexDirection: 'row', alignItems: 'flex-start', gap: 10,
                     cursor: 'pointer', padding: '12px 14px',
-                    borderRadius: 12, backgroundColor: consentChecked ? colors.primary[25] : '#F9FAFB',
-                    border: `1px solid ${consentChecked ? colors.primary[200] : colors.gray[100]}`,
+                    borderRadius: 12, backgroundColor: consentChecked ? colors.primary[25] : '#F0F1F3',
                   } as any}
                 >
                   <div style={{ flexShrink: 0, marginTop: 1 } as any}>
@@ -988,7 +982,6 @@ export const ContractSigningScreen: React.FC<ContractSigningScreenProps> = ({
         {/* Bottom action bar */}
         <div style={{
           padding: '12px 16px 28px',
-          borderTop: `1px solid ${colors.gray[100]}`,
           backgroundColor: '#FFFFFF',
         } as any}>
           <div
