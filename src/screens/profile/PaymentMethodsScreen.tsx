@@ -162,12 +162,16 @@ export const PaymentMethodsScreen: React.FC<PaymentMethodsScreenProps> = ({
 
   const handleSetAsDefault = () => {
     if (selectedCard) {
-      const updatedCards = cards.map(card => ({
-        ...card,
-        isDefault: card.id === selectedCard.id,
-      }));
-      setCards(updatedCards);
-      setSelectedCard({ ...selectedCard, isDefault: true });
+      if (role === 'ceo') {
+        setDefaultMethod(selectedCard.id);
+      } else {
+        const updatedCards = cards.map(card => ({
+          ...card,
+          isDefault: card.id === selectedCard.id,
+        }));
+        setCards(updatedCards);
+        setSelectedCard({ ...selectedCard, isDefault: true });
+      }
       setView('list');
     }
   };
@@ -582,7 +586,7 @@ export const PaymentMethodsScreen: React.FC<PaymentMethodsScreenProps> = ({
                 </>
               )}
             </View>
-            {selectedCard.isDefault && (
+            {(role === 'ceo' ? defaultMethod === selectedCard.id : selectedCard.isDefault) && (
               <View style={{ backgroundColor: colors.primary[500], paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10, marginLeft: 'auto' as any }}>
                 {Platform.OS === 'web' && (
                   <span style={{ fontSize: '11px', fontWeight: '600', color: colors.white, fontFamily: 'Inter, system-ui, sans-serif' } as any}>Default</span>
@@ -593,7 +597,7 @@ export const PaymentMethodsScreen: React.FC<PaymentMethodsScreenProps> = ({
 
           {/* Actions */}
           <View style={{ gap: 10 }}>
-            {!selectedCard.isDefault && (
+            {!(role === 'ceo' ? defaultMethod === selectedCard.id : selectedCard.isDefault) && (
               <Pressable
                 onPress={handleSetAsDefault}
                 style={{
