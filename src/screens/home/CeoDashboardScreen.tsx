@@ -1693,7 +1693,18 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                           <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.gray[500], textTransform: 'uppercase', letterSpacing: 0.5 } as any}>
                             Step {move.stepIdx + 1} of {STEPS.length}: {STEP_LABELS_MAP[move.step]}
                           </span>
-                          <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.primary[500], letterSpacing: -0.24, cursor: 'pointer' } as any}>
+                          <span
+                            onClick={() => setSelectedJob({
+                              job: {
+                                date: move.date, client: move.client, route: `${move.from.split(',')[0]} → ${move.to.split(',')[0]}`,
+                                amount: `$${move.price.toLocaleString()}`, rating: '—', status: 'In Progress',
+                                rooms: move.rooms, distance: '—', duration: '—',
+                                crew: 2, items: '—', clientPhone: '—', notes: '',
+                              },
+                              moverName: move.mover,
+                            })}
+                            style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.primary[500], letterSpacing: -0.24, cursor: 'pointer' } as any}
+                          >
                             View details
                           </span>
                         </div>
