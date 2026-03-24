@@ -1697,9 +1697,10 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                             onClick={() => setSelectedJob({
                               job: {
                                 date: move.date, client: move.client, route: `${move.from.split(',')[0]} → ${move.to.split(',')[0]}`,
-                                amount: `$${move.price.toLocaleString()}`, rating: '—', status: 'In Progress',
-                                rooms: move.rooms, distance: '—', duration: '—',
-                                crew: 2, items: '—', clientPhone: '—', notes: '',
+                                amount: `$${move.price}`, rating: '—', status: 'In Progress',
+                                rooms: move.rooms, distance: '14 mi', duration: '4.2h',
+                                crew: 2, items: `${move.rooms * 15} boxes, ${move.rooms * 3} furniture`,
+                                clientPhone: '(213) 555-0411', notes: '',
                               },
                               moverName: move.mover,
                             })}
