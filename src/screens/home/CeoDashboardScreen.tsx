@@ -29,7 +29,55 @@ const F = fontFamily.primary;
 
 /* Semantic accent colors (not in core palette but used consistently) */
 const ACCENT_PURPLE = '#7C3AED';   // avgCheck accent
-const ACCENT_GREEN_LIGHT = '#86EFAC'; // hero trend text on dark bg
+
+/* ═══════════════════════════════════════════
+   Icon components (matching user's icon set:
+   Star, Sync, Money-bag, Add-Product, Card-with-dollar)
+   ═══════════════════════════════════════════ */
+
+/* Star — for Rating */
+const StarIcon = ({ color, size = 18 }: { color: string; size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill={color} opacity="0.15" stroke={color} strokeWidth="1.5" strokeLinejoin="round"/>
+  </svg>
+);
+
+/* Sync / Arrows — for Conversion */
+const SyncIcon = ({ color, size = 18 }: { color: string; size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <path d="M17 1L21 5L17 9" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M3 11V9C3 6.79 4.79 5 7 5H21" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M7 23L3 19L7 15" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M21 13V15C21 17.21 19.21 19 17 19H3" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+/* Money bag — for Avg Check */
+const MoneyBagIcon = ({ color, size = 18 }: { color: string; size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <path d="M12 12V17M10 14.5H14" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M9.5 2H14.5L16 5H8L9.5 2Z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M8 5C4 8 3 11 3 14C3 18.97 7.03 22 12 22C16.97 22 21 18.97 21 14C21 11 20 8 16 5H8Z" stroke={color} strokeWidth="1.5" strokeLinejoin="round"/>
+  </svg>
+);
+
+/* Clipboard / Add Product — for Orders */
+const ClipboardIcon = ({ color, size = 18 }: { color: string; size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <rect x="5" y="3" width="14" height="18" rx="2" stroke={color} strokeWidth="1.5"/>
+    <path d="M9 1V5M15 1V5" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M9 10H15M9 14H13" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+);
+
+/* Card with dollar — for Revenue */
+const CardDollarIcon = ({ color, size = 18 }: { color: string; size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <rect x="2" y="4" width="20" height="16" rx="3" stroke={color} strokeWidth="1.5"/>
+    <path d="M2 10H22" stroke={color} strokeWidth="1.5"/>
+    <path d="M12 13V19M14 14.5H11C10.17 14.5 9.5 15.17 9.5 16C9.5 16.83 10.17 17.5 11 17.5H13C13.83 17.5 14.5 16.83 14.5 16C14.5 15.17 13.83 14.5 13 14.5H11" stroke={color} strokeWidth="1.2" strokeLinecap="round"/>
+  </svg>
+);
 
 /* ═══════════════════════════════════════════
    Types
@@ -150,44 +198,21 @@ interface DetailConfig {
 }
 
 const METRIC_CONFIG: Record<MetricKey, DetailConfig> = {
-  orders: {
-    title: 'Orders',
-    color: colors.primary[500],
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" stroke={colors.primary[500]} strokeWidth="1.8"/><path d="M9 7H15M9 11H15M9 15H12" stroke={colors.primary[500]} strokeWidth="1.5" strokeLinecap="round"/></svg>,
-  },
-  rating: {
-    title: 'Avg Rating',
-    color: colors.warning[500],
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke={colors.warning[500]} strokeWidth="1.8" strokeLinejoin="round"/></svg>,
-  },
-  conversion: {
-    title: 'Conversion Rate',
-    color: colors.success[500],
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12A10 10 0 1112.93 2C17 2 20.54 4.59 22 8.22" stroke={colors.success[500]} strokeWidth="1.8" strokeLinecap="round"/><path d="M22 4L12 14.01L9 11.01" stroke={colors.success[500]} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>,
-  },
-  avgCheck: {
-    title: 'Avg Check',
-    color: ACCENT_PURPLE,
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 1V23M17 5H9.5C7.01 5 5 7.01 5 9.5S7.01 14 9.5 14H14.5C16.99 14 19 16.01 19 18.5S16.99 23 14.5 23H5" stroke={ACCENT_PURPLE} strokeWidth="1.8" strokeLinecap="round"/></svg>,
-  },
-  revenue: {
-    title: 'Revenue',
-    color: colors.primary[500],
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 1V23M17 5H9.5C7.01 5 5 7.01 5 9.5S7.01 14 9.5 14H14.5C16.99 14 19 16.01 19 18.5S16.99 23 14.5 23H5" stroke={colors.primary[500]} strokeWidth="1.8" strokeLinecap="round"/></svg>,
-  },
+  orders: { title: 'Orders', color: colors.primary[500], icon: <ClipboardIcon color={colors.primary[500]} size={20} /> },
+  rating: { title: 'Avg Rating', color: colors.warning[500], icon: <StarIcon color={colors.warning[500]} size={20} /> },
+  conversion: { title: 'Conversion Rate', color: colors.success[500], icon: <SyncIcon color={colors.success[500]} size={20} /> },
+  avgCheck: { title: 'Avg Check', color: ACCENT_PURPLE, icon: <MoneyBagIcon color={ACCENT_PURPLE} size={20} /> },
+  revenue: { title: 'Revenue', color: colors.primary[500], icon: <CardDollarIcon color={colors.primary[500]} size={20} /> },
   onTime: {
-    title: 'On-time Rate',
-    color: colors.success[500],
+    title: 'On-time Rate', color: colors.success[500],
     icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke={colors.success[500]} strokeWidth="1.8"/><path d="M12 6V12L16 14" stroke={colors.success[500]} strokeWidth="1.8" strokeLinecap="round"/></svg>,
   },
   cancellation: {
-    title: 'Cancellation Rate',
-    color: colors.error[500],
+    title: 'Cancellation Rate', color: colors.error[500],
     icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke={colors.error[500]} strokeWidth="1.8"/><path d="M15 9L9 15M9 9L15 15" stroke={colors.error[500]} strokeWidth="1.8" strokeLinecap="round"/></svg>,
   },
   avgTime: {
-    title: 'Avg Move Time',
-    color: colors.primary[500],
+    title: 'Avg Move Time', color: colors.primary[500],
     icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke={colors.primary[500]} strokeWidth="1.8"/><path d="M12 6V12L16 14" stroke={colors.primary[500]} strokeWidth="1.8" strokeLinecap="round"/></svg>,
   },
 };
@@ -655,36 +680,26 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                   </span>
                 </div>
 
-                {/* ── Revenue Hero Card ── */}
+                {/* ── Revenue Hero Card (white, no gradient) ── */}
                 <div
                   onClick={() => setDrillDown('revenue')}
                   style={{
-                    background: `linear-gradient(135deg, ${colors.primary[500]}, ${colors.primary[700] || '#1570CD'})`,
-                    borderRadius: 16, padding: '24px 20px', marginBottom: 12, cursor: 'pointer',
+                    backgroundColor: '#FFFFFF', borderRadius: 16,
+                    padding: '20px', marginBottom: 12, cursor: 'pointer',
                   } as any}
                 >
-                  <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' } as any}>
-                    <div>
-                      <span style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.7)', display: 'block' } as any}>
-                        Total Revenue
-                      </span>
-                      <span style={{ fontFamily: F, fontSize: 36, fontWeight: 800, color: '#FFFFFF', display: 'block', marginTop: 4, letterSpacing: -1 } as any}>
-                        ${d.revenue.toLocaleString()}
-                      </span>
-                      <span style={{ fontFamily: F, fontSize: 13, fontWeight: 600, color: ACCENT_GREEN_LIGHT, display: 'block', marginTop: 6 } as any}>
-                        {d.revenueTrend}
-                      </span>
-                    </div>
-                    <div style={{
-                      width: 56, height: 56, borderRadius: 16,
-                      backgroundColor: 'rgba(255,255,255,0.15)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    } as any}>
-                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 1V23M17 5H9.5C7.01 5 5 7.01 5 9.5S7.01 14 9.5 14H14.5C16.99 14 19 16.01 19 18.5S16.99 23 14.5 23H5" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 } as any}>
+                    <span style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: colors.gray[400] } as any}>
+                      Total Revenue
+                    </span>
+                    <ChevronRightIcon color={colors.gray[200]} />
                   </div>
+                  <span style={{ fontFamily: F, fontSize: 34, fontWeight: 800, color: colors.gray[900], display: 'block', letterSpacing: -1 } as any}>
+                    ${d.revenue.toLocaleString()}
+                  </span>
+                  <span style={{ fontFamily: F, fontSize: 13, fontWeight: 600, color: colors.success[500], display: 'block', marginTop: 6 } as any}>
+                    {d.revenueTrend}
+                  </span>
 
                   {/* Period toggle */}
                   <div style={{ display: 'flex', gap: 8, marginTop: 16 } as any}>
@@ -694,10 +709,10 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                         onClick={(e: any) => { e.stopPropagation(); setPeriod(p); }}
                         style={{
                           padding: '6px 16px', borderRadius: 12, cursor: 'pointer',
-                          backgroundColor: period === p ? 'rgba(255,255,255,0.25)' : 'transparent',
+                          backgroundColor: period === p ? colors.primary[500] : '#EFF2F7',
                         } as any}
                       >
-                        <span style={{ fontFamily: F, fontSize: 12, fontWeight: 600, color: '#FFFFFF' } as any}>
+                        <span style={{ fontFamily: F, fontSize: 12, fontWeight: 600, color: period === p ? '#FFFFFF' : colors.gray[600] } as any}>
                           {p === 'week' ? 'This Week' : 'This Month'}
                         </span>
                       </div>
@@ -713,7 +728,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                     sub={d.ordersSub}
                     color={colors.primary[500]}
                     metric="orders"
-                    icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" stroke={colors.primary[500]} strokeWidth="1.8"/><path d="M9 7H15M9 11H15M9 15H12" stroke={colors.primary[500]} strokeWidth="1.5" strokeLinecap="round"/></svg>}
+                    icon={<ClipboardIcon color={colors.primary[500]} />}
                   />
                   <MetricCard
                     label="Avg Rating"
@@ -721,7 +736,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                     sub={d.ratingSub}
                     color={colors.warning[500]}
                     metric="rating"
-                    icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke={colors.warning[500]} strokeWidth="1.8" strokeLinejoin="round"/></svg>}
+                    icon={<StarIcon color={colors.warning[500]} />}
                   />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'row', gap: 10, marginBottom: 12 } as any}>
@@ -731,7 +746,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                     sub={d.conversionSub}
                     color={colors.success[500]}
                     metric="conversion"
-                    icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12A10 10 0 1112.93 2C17 2 20.54 4.59 22 8.22" stroke={colors.success[500]} strokeWidth="1.8" strokeLinecap="round"/><path d="M22 4L12 14.01L9 11.01" stroke={colors.success[500]} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                    icon={<SyncIcon color={colors.success[500]} />}
                   />
                   <MetricCard
                     label="Avg Check"
@@ -739,16 +754,22 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                     sub={d.avgCheckSub}
                     color={ACCENT_PURPLE}
                     metric="avgCheck"
-                    icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 1V23M17 5H9.5C7.01 5 5 7.01 5 9.5S7.01 14 9.5 14H14.5C16.99 14 19 16.01 19 18.5S16.99 23 14.5 23H5" stroke={ACCENT_PURPLE} strokeWidth="1.8" strokeLinecap="round"/></svg>}
+                    icon={<MoneyBagIcon color={ACCENT_PURPLE} />}
                   />
                 </div>
 
-                {/* ── Revenue Chart ── */}
-                <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '20px 16px', marginBottom: 12 } as any}>
-                  <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 } as any}>
+                {/* ── Revenue Chart (tappable) ── */}
+                <div
+                  onClick={() => setDrillDown('revenue')}
+                  style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '20px 16px', marginBottom: 12, cursor: 'pointer' } as any}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 } as any}>
                     <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900] } as any}>{d.chartLabel}</span>
-                    <span style={{ fontFamily: F, fontSize: 14, fontWeight: 700, color: colors.primary[500] } as any}>${totalChart.toLocaleString()}</span>
+                    <ChevronRightIcon color={colors.gray[200]} />
                   </div>
+                  <span style={{ fontFamily: F, fontSize: 22, fontWeight: 800, color: colors.gray[900], display: 'block', marginBottom: 16, letterSpacing: -0.5 } as any}>
+                    ${totalChart.toLocaleString()}
+                  </span>
                   <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: 6, height: 120 } as any}>
                     {d.chart.map((c, i) => {
                       const h = Math.max((c.value / maxRev) * 100, 8);
@@ -772,22 +793,39 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                   </div>
                 </div>
 
-                {/* ── Team Utilization ── */}
+                {/* ── Team Status ── */}
                 <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '20px 16px', marginBottom: 12 } as any}>
-                  <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900], display: 'block', marginBottom: 16 } as any}>
-                    Team Utilization
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 } as any}>
+                    <div>
+                      <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900], display: 'block' } as any}>
+                        Team Status
+                      </span>
+                      <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[400], display: 'block', marginTop: 2 } as any}>
+                        {TEAM_STATS.totalMovers} movers · {Math.round((TEAM_STATS.activeNow / TEAM_STATS.totalMovers) * 100)}% active now
+                      </span>
+                    </div>
+                    <span style={{
+                      fontFamily: F, fontSize: 12, fontWeight: 600, color: colors.success[500],
+                      backgroundColor: colors.success[50], padding: '4px 10px', borderRadius: 12,
+                    } as any}>Live</span>
+                  </div>
+                  {/* Utilization bar */}
+                  <div style={{ display: 'flex', height: 8, borderRadius: 4, overflow: 'hidden', marginBottom: 14 } as any}>
+                    <div style={{ width: `${(TEAM_STATS.activeNow / TEAM_STATS.totalMovers) * 100}%`, backgroundColor: colors.success[500] } as any} />
+                    <div style={{ width: `${(TEAM_STATS.onBreak / TEAM_STATS.totalMovers) * 100}%`, backgroundColor: colors.warning[400] } as any} />
+                    <div style={{ width: `${(TEAM_STATS.available / TEAM_STATS.totalMovers) * 100}%`, backgroundColor: colors.primary[300] } as any} />
+                  </div>
                   <div style={{ display: 'flex', flexDirection: 'row', gap: 8 } as any}>
                     {[
                       { label: 'Active', value: TEAM_STATS.activeNow, color: colors.success[500], bg: colors.success[50] },
                       { label: 'On Break', value: TEAM_STATS.onBreak, color: colors.warning[500], bg: colors.warning[50] },
-                      { label: 'Available', value: TEAM_STATS.available, color: colors.primary[500], bg: colors.primary[25] },
+                      { label: 'Available', value: TEAM_STATS.available, color: colors.primary[500], bg: colors.primary[25] || '#EFF8FF' },
                     ].map((st, i) => (
                       <div key={i} style={{
                         flex: 1, padding: '12px 10px', borderRadius: 12, textAlign: 'center',
                         backgroundColor: st.bg,
                       } as any}>
-                        <span style={{ fontFamily: F, fontSize: 24, fontWeight: 800, color: st.color, display: 'block' } as any}>
+                        <span style={{ fontFamily: F, fontSize: 22, fontWeight: 800, color: st.color, display: 'block' } as any}>
                           {st.value}
                         </span>
                         <span style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: st.color, display: 'block', marginTop: 2, opacity: 0.8 } as any}>
@@ -796,26 +834,22 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                       </div>
                     ))}
                   </div>
-                  {/* Utilization bar */}
-                  <div style={{ marginTop: 12, display: 'flex', height: 8, borderRadius: 4, overflow: 'hidden' } as any}>
-                    <div style={{ width: `${(TEAM_STATS.activeNow / TEAM_STATS.totalMovers) * 100}%`, backgroundColor: colors.success[500] } as any} />
-                    <div style={{ width: `${(TEAM_STATS.onBreak / TEAM_STATS.totalMovers) * 100}%`, backgroundColor: colors.warning[400] } as any} />
-                    <div style={{ width: `${(TEAM_STATS.available / TEAM_STATS.totalMovers) * 100}%`, backgroundColor: colors.primary[300] } as any} />
-                  </div>
-                  <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[400], display: 'block', marginTop: 8, textAlign: 'center' } as any}>
-                    {TEAM_STATS.totalMovers} movers total · {Math.round((TEAM_STATS.activeNow / TEAM_STATS.totalMovers) * 100)}% utilization
-                  </span>
                 </div>
 
                 {/* ── Top Movers Leaderboard ── */}
                 <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '20px 16px', marginBottom: 12 } as any}>
-                  <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900], display: 'block', marginBottom: 14 } as any}>
-                    Top Movers
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 } as any}>
+                    <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900] } as any}>
+                      Top Movers
+                    </span>
+                    <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.gray[400] } as any}>
+                      {period === 'week' ? 'This Week' : 'This Month'}
+                    </span>
+                  </div>
                   {TOP_MOVERS.map((mover, i) => (
                     <div key={i} style={{
                       display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 12,
-                      padding: '10px 0',
+                      padding: '10px 0', cursor: 'pointer',
                     } as any}>
                       {/* Rank */}
                       <div style={{
@@ -854,27 +888,29 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                         </span>
                       </div>
 
-                      {/* Revenue */}
+                      {/* Revenue + Chevron */}
                       <span style={{ fontFamily: F, fontSize: 14, fontWeight: 700, color: colors.gray[900], flexShrink: 0 } as any}>
                         ${mover.revenue.toLocaleString()}
                       </span>
+                      <ChevronRightIcon color={colors.gray[200]} />
                     </div>
                   ))}
                 </div>
 
-                {/* ── On-time & Cancellation ── */}
+                {/* ── Operational KPIs ── */}
                 <div style={{ display: 'flex', flexDirection: 'row', gap: 10, marginBottom: 12 } as any}>
                   {[
-                    { key: 'onTime' as MetricKey, value: d.onTime, label: 'On-time Rate', color: colors.success[500] },
-                    { key: 'cancellation' as MetricKey, value: d.cancellation, label: 'Cancellation', color: colors.error[500] },
-                    { key: 'avgTime' as MetricKey, value: d.avgMoveTime, label: 'Avg Move Time', color: colors.primary[500] },
+                    { key: 'onTime' as MetricKey, value: d.onTime, label: 'On-time Rate', sub: period === 'week' ? '↑ vs last week' : '↓ 1% vs last month', color: colors.success[500] },
+                    { key: 'cancellation' as MetricKey, value: d.cancellation, label: 'Cancellation', sub: period === 'week' ? '↓ 0.4% improved' : '↑ 0.3% vs last month', color: colors.error[500] },
+                    { key: 'avgTime' as MetricKey, value: d.avgMoveTime, label: 'Avg Move Time', sub: period === 'week' ? '↓ 12 min faster' : '↑ 18 min slower', color: colors.primary[500] },
                   ].map(stat => (
                     <div key={stat.key} onClick={() => setDrillDown(stat.key)} style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px 14px', cursor: 'pointer' } as any}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' } as any}>
-                        <span style={{ fontFamily: F, fontSize: 24, fontWeight: 800, color: stat.color, display: 'block' } as any}>{stat.value}</span>
+                        <span style={{ fontFamily: F, fontSize: 22, fontWeight: 800, color: stat.color, display: 'block' } as any}>{stat.value}</span>
                         <ChevronRightIcon color={colors.gray[200]} />
                       </div>
                       <span style={{ fontFamily: F, fontSize: 11, fontWeight: 500, color: colors.gray[400], display: 'block', marginTop: 4 } as any}>{stat.label}</span>
+                      <span style={{ fontFamily: F, fontSize: 10, fontWeight: 600, color: colors.gray[300], display: 'block', marginTop: 4 } as any}>{stat.sub}</span>
                     </div>
                   ))}
                 </div>
