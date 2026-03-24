@@ -305,12 +305,20 @@ const DATA = {
   },
 };
 
-const TOP_MOVERS = [
-  { name: 'Dmitriy K.', moves: 34, rating: 4.9, revenue: 18200 },
-  { name: 'Alex M.', moves: 28, rating: 4.8, revenue: 15600 },
-  { name: 'James L.', moves: 22, rating: 4.7, revenue: 12400 },
-  { name: 'Carlos R.', moves: 19, rating: 4.9, revenue: 10800 },
+const ALL_MOVERS = [
+  { name: 'Dmitriy K.', moves: 34, rating: 4.9, revenue: 18200, onTime: '98%', cancellation: '0.8%', avgTime: '3.4h' },
+  { name: 'Alex M.', moves: 28, rating: 4.8, revenue: 15600, onTime: '95%', cancellation: '1.2%', avgTime: '3.8h' },
+  { name: 'James L.', moves: 22, rating: 4.7, revenue: 12400, onTime: '92%', cancellation: '2.5%', avgTime: '4.1h' },
+  { name: 'Carlos R.', moves: 19, rating: 4.9, revenue: 10800, onTime: '97%', cancellation: '0.5%', avgTime: '3.6h' },
+  { name: 'Marcus T.', moves: 17, rating: 4.6, revenue: 9400, onTime: '90%', cancellation: '3.1%', avgTime: '4.3h' },
+  { name: 'Victor S.', moves: 15, rating: 4.8, revenue: 8700, onTime: '96%', cancellation: '0.9%', avgTime: '3.5h' },
+  { name: 'Ryan P.', moves: 12, rating: 4.5, revenue: 6800, onTime: '88%', cancellation: '4.0%', avgTime: '4.6h' },
+  { name: 'Kevin H.', moves: 10, rating: 4.9, revenue: 5900, onTime: '99%', cancellation: '0.3%', avgTime: '3.2h' },
+  { name: 'Nick W.', moves: 8, rating: 4.4, revenue: 4200, onTime: '85%', cancellation: '5.0%', avgTime: '4.8h' },
+  { name: 'Tony B.', moves: 6, rating: 4.7, revenue: 3100, onTime: '93%', cancellation: '1.5%', avgTime: '3.9h' },
 ];
+
+const TOP_MOVERS = ALL_MOVERS.slice(0, 4);
 
 /* Mock employee detail data */
 interface JobData {
@@ -359,6 +367,49 @@ const MOVER_DETAILS: Record<string, {
     recentJobs: [
       { date: 'Mar 21', client: 'Anna P.', route: 'Silver Lake → Echo Park', amount: '$380', rating: '5.0', status: 'Completed', rooms: 1, distance: '3 mi', duration: '1.5h', crew: 2, items: '15 boxes, 2 furniture', clientPhone: '(323) 555-0617', notes: 'Studio apartment' },
       { date: 'Mar 19', client: 'Grace L.', route: 'WeHo → Culver City', amount: '$720', rating: '4.9', status: 'Completed', rooms: 2, distance: '7 mi', duration: '3.2h', crew: 2, items: '35 boxes, 5 furniture', clientPhone: '(424) 555-0789', notes: 'Parking tricky on destination street' },
+    ],
+  },
+  'Marcus T.': {
+    onTime: '90%', cancellation: '3.1%', avgTime: '4.3h',
+    rating: '4.6', totalRevenue: 9400, completedMoves: 17,
+    recentJobs: [
+      { date: 'Mar 22', client: 'Emily R.', route: 'Koreatown → Los Feliz', amount: '$580', rating: '4.5', status: 'Completed', rooms: 2, distance: '6 mi', duration: '3.8h', crew: 2, items: '28 boxes, 4 furniture', clientPhone: '(213) 555-0891', notes: 'Narrow staircase' },
+      { date: 'Mar 20', client: 'Steve K.', route: 'Playa Vista → El Segundo', amount: '$690', rating: '4.7', status: 'Completed', rooms: 3, distance: '5 mi', duration: '4.2h', crew: 2, items: '40 boxes, 6 furniture', clientPhone: '(310) 555-0456', notes: '' },
+    ],
+  },
+  'Victor S.': {
+    onTime: '96%', cancellation: '0.9%', avgTime: '3.5h',
+    rating: '4.8', totalRevenue: 8700, completedMoves: 15,
+    recentJobs: [
+      { date: 'Mar 23', client: 'Maria G.', route: 'Pasadena → Arcadia', amount: '$440', rating: '5.0', status: 'Completed', rooms: 2, distance: '4 mi', duration: '2.5h', crew: 2, items: '22 boxes, 3 furniture', clientPhone: '(626) 555-0321', notes: 'Senior client, be extra careful' },
+    ],
+  },
+  'Ryan P.': {
+    onTime: '88%', cancellation: '4.0%', avgTime: '4.6h',
+    rating: '4.5', totalRevenue: 6800, completedMoves: 12,
+    recentJobs: [
+      { date: 'Mar 21', client: 'Chris D.', route: 'Northridge → Encino', amount: '$510', rating: '4.3', status: 'Completed', rooms: 2, distance: '8 mi', duration: '3.9h', crew: 2, items: '32 boxes, 5 furniture', clientPhone: '(818) 555-0654', notes: 'Gate code needed' },
+    ],
+  },
+  'Kevin H.': {
+    onTime: '99%', cancellation: '0.3%', avgTime: '3.2h',
+    rating: '4.9', totalRevenue: 5900, completedMoves: 10,
+    recentJobs: [
+      { date: 'Mar 22', client: 'Diana W.', route: 'Redondo Beach → Torrance', amount: '$620', rating: '5.0', status: 'Completed', rooms: 2, distance: '3 mi', duration: '2.8h', crew: 2, items: '26 boxes, 4 furniture', clientPhone: '(310) 555-0987', notes: '' },
+    ],
+  },
+  'Nick W.': {
+    onTime: '85%', cancellation: '5.0%', avgTime: '4.8h',
+    rating: '4.4', totalRevenue: 4200, completedMoves: 8,
+    recentJobs: [
+      { date: 'Mar 20', client: 'Paul M.', route: 'Glendale → Pasadena', amount: '$390', rating: '4.2', status: 'Completed', rooms: 1, distance: '5 mi', duration: '2.5h', crew: 2, items: '18 boxes, 2 furniture', clientPhone: '(818) 555-0123', notes: '' },
+    ],
+  },
+  'Tony B.': {
+    onTime: '93%', cancellation: '1.5%', avgTime: '3.9h',
+    rating: '4.7', totalRevenue: 3100, completedMoves: 6,
+    recentJobs: [
+      { date: 'Mar 19', client: 'Jen T.', route: 'Santa Monica → Venice', amount: '$350', rating: '4.8', status: 'Completed', rooms: 1, distance: '2 mi', duration: '1.8h', crew: 2, items: '14 boxes, 2 furniture', clientPhone: '(424) 555-0567', notes: 'Small studio' },
     ],
   },
 };
@@ -826,6 +877,155 @@ const DetailScreen: React.FC<{
 };
 
 /* ═══════════════════════════════════════════
+   All Movers Screen (sortable table-rating)
+   ═══════════════════════════════════════════ */
+
+type MoverSortKey = 'revenue' | 'moves' | 'avgTime';
+
+const AllMoversScreen: React.FC<{
+  onBack: () => void;
+  onSelectMover: (index: number) => void;
+}> = ({ onBack, onSelectMover }) => {
+  const [sortBy, setSortBy] = useState<MoverSortKey>('revenue');
+
+  const sortedMovers = [...ALL_MOVERS].map((m, origIdx) => ({ ...m, origIdx })).sort((a, b) => {
+    switch (sortBy) {
+      case 'revenue': return b.revenue - a.revenue;
+      case 'moves': return b.moves - a.moves;
+      case 'avgTime': return parseFloat(a.avgTime) - parseFloat(b.avgTime); // lower is better
+      default: return 0;
+    }
+  });
+
+  const sortOptions: { key: MoverSortKey; label: string }[] = [
+    { key: 'revenue', label: 'Revenue' },
+    { key: 'moves', label: 'Moves' },
+    { key: 'avgTime', label: 'Avg Time' },
+  ];
+
+  return (
+    <AnimatedPage direction="right" duration={0.3}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: '#F5F5F7' } as any}>
+      {/* Nav bar */}
+      <div style={{
+        display: 'flex', alignItems: 'center', padding: '14px 16px',
+        backgroundColor: '#F5F5F7', position: 'relative', minHeight: 44,
+      } as any}>
+        <div onClick={onBack} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', zIndex: 1 } as any}>
+          <BackIcon />
+        </div>
+        <span style={{
+          fontFamily: F, fontSize: 17, fontWeight: 600, color: colors.gray[900],
+          position: 'absolute', left: 0, right: 0, textAlign: 'center', pointerEvents: 'none',
+        } as any}>
+          All Movers
+        </span>
+      </div>
+
+      {/* Sort chips */}
+      <div style={{ display: 'flex', gap: 8, padding: '0 16px 12px', flexWrap: 'wrap' } as any}>
+        {sortOptions.map(opt => (
+          <div
+            key={opt.key}
+            className="ceo-chip"
+            onClick={() => setSortBy(opt.key)}
+            style={{
+              padding: '7px 14px', borderRadius: 10, cursor: 'pointer',
+              backgroundColor: sortBy === opt.key ? colors.primary[500] : '#FFFFFF',
+            } as any}
+          >
+            <span style={{
+              fontFamily: F, fontSize: 13, fontWeight: 600,
+              color: sortBy === opt.key ? '#FFFFFF' : colors.gray[600],
+            } as any}>
+              {opt.label}
+              {sortBy === opt.key ? ' ↓' : ''}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* Movers list */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0 16px' } as any}>
+        {sortedMovers.map((mover, i) => {
+          const detail = MOVER_DETAILS[mover.name];
+          return (
+            <StaggerItem key={mover.name} index={i}>
+            <div
+              className="ceo-card-interactive"
+              onClick={() => onSelectMover(mover.origIdx)}
+              style={{
+                backgroundColor: '#FFFFFF', borderRadius: 16,
+                padding: '14px 16px', marginBottom: 8, cursor: 'pointer',
+              } as any}
+            >
+              {/* Row 1: Avatar + Name + Rank + Revenue */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 } as any}>
+                {/* Rank badge */}
+                <div style={{
+                  width: 26, height: 26, borderRadius: 10,
+                  backgroundColor: i === 0 ? colors.warning[50] : i < 3 ? colors.primary[50] : colors.gray[50],
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                } as any}>
+                  <span style={{
+                    fontFamily: F, fontSize: 12, fontWeight: 700,
+                    color: i === 0 ? colors.warning[600] : i < 3 ? colors.primary[500] : colors.gray[500],
+                  } as any}>
+                    {i + 1}
+                  </span>
+                </div>
+
+                {/* Avatar */}
+                <div style={{
+                  width: 40, height: 40, borderRadius: 12,
+                  backgroundColor: colors.primary[50],
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                } as any}>
+                  <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.primary[500] } as any}>
+                    {mover.name.split(' ').map(n => n[0]).join('')}
+                  </span>
+                </div>
+
+                {/* Name + moves */}
+                <div style={{ flex: 1, minWidth: 0 } as any}>
+                  <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900], display: 'block' } as any}>
+                    {mover.name}
+                  </span>
+                  <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[400], marginTop: 2, display: 'block' } as any}>{mover.moves} moves</span>
+                </div>
+
+                {/* Revenue */}
+                <div style={{ textAlign: 'right', flexShrink: 0 } as any}>
+                  <span style={{ fontFamily: F, fontSize: 16, fontWeight: 700, color: colors.gray[900], display: 'block' } as any}>
+                    ${mover.revenue.toLocaleString()}
+                  </span>
+                </div>
+                <ChevronRightIcon color={colors.gray[200]} />
+              </div>
+
+              {/* Row 2: Avg time chip */}
+              <div style={{ display: 'flex', gap: 8 } as any}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  paddingTop: 6, paddingBottom: 6, paddingLeft: 10, paddingRight: 10,
+                  backgroundColor: '#F9FAFB', borderRadius: 10,
+                } as any}>
+                  <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[400] } as any}>Avg time</span>
+                  <span style={{ fontFamily: F, fontSize: 13, fontWeight: 700, color: colors.primary[500] } as any}>{mover.avgTime}</span>
+                </div>
+              </div>
+            </div>
+            </StaggerItem>
+          );
+        })}
+        <div style={{ height: 48 } as any} />
+      </div>
+    </div>
+    </AnimatedPage>
+  );
+};
+
+/* ═══════════════════════════════════════════
    Mover Detail Screen (employee stats)
    ═══════════════════════════════════════════ */
 
@@ -873,11 +1073,9 @@ const MoverDetailScreen: React.FC<{
               <span style={{ fontFamily: F, fontSize: 18, fontWeight: 700, color: colors.gray[900], display: 'block' } as any}>
                 {mover.name}
               </span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 } as any}>
-                <StarIcon color={colors.warning[500]} size={14} />
-                <span style={{ fontFamily: F, fontSize: 14, fontWeight: 600, color: colors.warning[600] } as any}>{detail.rating}</span>
-                <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[400], marginLeft: 4 } as any}>· Rank #{rank}</span>
-              </div>
+              <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[400], marginTop: 4, display: 'block' } as any}>
+                Rank #{rank} · {detail.completedMoves} moves
+              </span>
             </div>
           </div>
         </div>
@@ -896,16 +1094,10 @@ const MoverDetailScreen: React.FC<{
         </div>
 
         <div style={{ display: 'flex', gap: 10, marginBottom: 12, animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.14s both' } as any}>
-          {[
-            { label: 'On-time', value: detail.onTime, color: colors.success[500] },
-            { label: 'Cancellation', value: detail.cancellation, color: colors.error[500] },
-            { label: 'Avg Time', value: detail.avgTime, color: colors.primary[500] },
-          ].map(s => (
-            <div key={s.label} style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px 14px' } as any}>
-              <span style={{ fontFamily: F, fontSize: 20, fontWeight: 800, color: s.color, display: 'block' } as any}>{s.value}</span>
-              <span style={{ fontFamily: F, fontSize: 11, fontWeight: 500, color: colors.gray[400], display: 'block', marginTop: 4 } as any}>{s.label}</span>
-            </div>
-          ))}
+          <div style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px 14px' } as any}>
+            <span style={{ fontFamily: F, fontSize: 20, fontWeight: 800, color: colors.primary[500], display: 'block' } as any}>{detail.avgTime}</span>
+            <span style={{ fontFamily: F, fontSize: 11, fontWeight: 500, color: colors.gray[400], display: 'block', marginTop: 4 } as any}>Avg Move Time</span>
+          </div>
         </div>
 
         {/* Recent jobs */}
@@ -927,11 +1119,9 @@ const MoverDetailScreen: React.FC<{
                   <ChevronRightIcon color={colors.gray[200]} />
                 </div>
               </div>
-              <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[500], display: 'block', marginBottom: 4 } as any}>{job.route}</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 } as any}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 4 } as any}>
+                <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[500] } as any}>{job.route}</span>
                 <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[400] } as any}>{job.date}</span>
-                <StarIcon color={colors.warning[500]} size={11} />
-                <span style={{ fontFamily: F, fontSize: 12, fontWeight: 600, color: colors.warning[600] } as any}>{job.rating}</span>
               </div>
             </div>
             </StaggerItem>
@@ -1021,10 +1211,10 @@ const jobToMoveDetail = (job: JobData, moverName: string): MoveDetailData => {
       // Client review
       ...(job.rating ? {
         clientReview: {
-          rating: parseFloat(job.rating),
-          text: parseFloat(job.rating) >= 4.9
+          rating: parseFloat(job.rating) >= 4.8 ? 5 : parseFloat(job.rating) >= 4.5 ? 4 : 3,
+          text: parseFloat(job.rating) >= 4.8
             ? 'Amazing service! Very professional and careful with all our belongings.'
-            : parseFloat(job.rating) >= 4.7
+            : parseFloat(job.rating) >= 4.5
             ? 'Great job overall, everything arrived in perfect condition.'
             : 'Good move, would recommend.',
           date: job.date,
@@ -1064,6 +1254,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
   const [period, setPeriod] = useState<'week' | 'month'>('week');
   const [drillDown, setDrillDown] = useState<MetricKey | null>(null);
   const [selectedMover, setSelectedMover] = useState<number | null>(null);
+  const [showAllMovers, setShowAllMovers] = useState(false);
   const [selectedJob, setSelectedJob] = useState<{ job: JobData; moverName: string } | null>(null);
 
   /* Inject animation CSS on mount */
@@ -1123,16 +1314,21 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
   }
 
   return (
-    <SafeAreaView style={[s.safeArea, (drillDown || selectedMover !== null) && { backgroundColor: '#F5F5F7' }]}>
-      <View style={[s.container, (drillDown || selectedMover !== null) && { backgroundColor: '#F5F5F7' }]}>
+    <SafeAreaView style={[s.safeArea, (drillDown || selectedMover !== null || showAllMovers) && { backgroundColor: '#F5F5F7' }]}>
+      <View style={[s.container, (drillDown || selectedMover !== null || showAllMovers) && { backgroundColor: '#F5F5F7' }]}>
         <StatusBarMock onTimeTap={onBack} />
 
         {selectedMover !== null ? (
           <MoverDetailScreen
-            mover={TOP_MOVERS[selectedMover]}
+            mover={ALL_MOVERS[selectedMover]}
             rank={selectedMover + 1}
-            onBack={() => setSelectedMover(null)}
+            onBack={() => { setSelectedMover(null); }}
             onJobPress={(job: JobData, moverName: string) => setSelectedJob({ job, moverName })}
+          />
+        ) : showAllMovers ? (
+          <AllMoversScreen
+            onBack={() => setShowAllMovers(false)}
+            onSelectMover={(idx) => { setSelectedMover(idx); }}
           />
         ) : drillDown ? (
           <DetailScreen metric={drillDown} onBack={() => setDrillDown(null)} />
@@ -1270,9 +1466,12 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                     <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900] } as any}>
                       Top Movers
                     </span>
-                    <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.gray[400] } as any}>
-                      {period === 'week' ? 'This Week' : 'This Month'}
-                    </span>
+                    <div onClick={() => setShowAllMovers(true)} style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer' } as any}>
+                      <span style={{ fontFamily: F, fontSize: 13, fontWeight: 600, color: colors.primary[500] } as any}>
+                        View All
+                      </span>
+                      <ChevronRightIcon color={colors.primary[500]} />
+                    </div>
                   </div>
                   {TOP_MOVERS.map((mover, i) => (
                     <div key={i} className="ceo-mover-row" onClick={() => setSelectedMover(i)} style={{
@@ -1312,7 +1511,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                           {mover.name}
                         </span>
                         <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[400], display: 'block', marginTop: 2 } as any}>
-                          {mover.moves} moves · <StarIcon color={colors.warning[500]} size={11} /> {mover.rating}
+                          {mover.moves} moves
                         </span>
                       </div>
 

@@ -354,7 +354,7 @@ export const MoveDetailScreen: React.FC<MoveDetailScreenProps> = ({
                     { value: (move as any).actualDuration || '—', label: 'Duration' },
                     { value: `$${((move as any).earningsSummary.totalEarned || 0).toLocaleString()}`, label: 'Earned' },
                     { value: String((move as any).earningsSummary.itemsMoved || move.totalItems), label: 'Items' },
-                    { value: (move as any).clientReview ? String((move as any).clientReview.rating) : '—', label: 'Rating' },
+                    { value: (move as any).clientReview ? `${(move as any).clientReview.rating}/5` : '—', label: 'Review' },
                   ].map((st, i) => (
                     <div key={i} style={{
                       flex: 1, display: 'flex', flexDirection: 'column' as const, alignItems: 'center',
@@ -423,9 +423,13 @@ export const MoveDetailScreen: React.FC<MoveDetailScreenProps> = ({
                     <span style={{ fontFamily: font, fontSize: 16, fontWeight: 600, color: colors.gray[900], display: 'block' } as any}>{(move as any).moverInfo.name}</span>
                     <span style={{ fontFamily: font, fontSize: 14, color: colors.gray[400], marginTop: 2, display: 'block' } as any}>Crew of {(move as any).moverInfo.crewSize}</span>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'row' as const, alignItems: 'center', gap: 4, flexShrink: 0 } as any}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-                    <span style={{ fontFamily: font, fontSize: 15, fontWeight: 700, color: colors.gray[900] } as any}>{(move as any).moverInfo.rating}</span>
+                  <div style={{
+                    backgroundColor: colors.primary[50], borderRadius: 8,
+                    paddingTop: 4, paddingBottom: 4, paddingLeft: 10, paddingRight: 10, flexShrink: 0,
+                  } as any}>
+                    <span style={{ fontFamily: font, fontSize: 13, fontWeight: 600, color: colors.primary[500] } as any}>
+                      {(move as any).moverInfo.crewSize > 2 ? 'Premium' : 'Standard'} crew
+                    </span>
                   </div>
                 </div>
               </div>
