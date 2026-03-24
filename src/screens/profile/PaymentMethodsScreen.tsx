@@ -25,7 +25,7 @@ interface PaymentMethodsScreenProps {
   role?: 'mover' | 'sales' | 'ceo';
 }
 
-type ViewType = 'list' | 'addCard' | 'cardDetail' | 'deleteConfirm' | 'success';
+type ViewType = 'list' | 'addPicker' | 'addCard' | 'addBank' | 'cardDetail' | 'deleteConfirm' | 'success' | 'bankSuccess';
 
 const DEMO_CARDS: PaymentCard[] = [
   {
@@ -257,7 +257,7 @@ export const PaymentMethodsScreen: React.FC<PaymentMethodsScreenProps> = ({
             rightAction={
               Platform.OS === 'web' ? (
                 <Pressable
-                  onPress={() => setView('addCard')}
+                  onPress={() => role === 'ceo' ? setView('addPicker') : setView('addCard')}
                   style={{
                     paddingHorizontal: 12,
                     paddingVertical: 8,
@@ -873,14 +873,229 @@ export const PaymentMethodsScreen: React.FC<PaymentMethodsScreenProps> = ({
     );
   };
 
+  // ── Add Method Picker (bottom sheet) ──
+  const renderAddPickerSheet = () => (
+    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 100 }}>
+      <Pressable
+        onPress={() => setView('list')}
+        style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.4)' }}
+      />
+      <View style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0,
+        backgroundColor: colors.white, borderTopLeftRadius: 20, borderTopRightRadius: 20,
+        paddingTop: 12, paddingBottom: 34, paddingHorizontal: 16,
+      }}>
+        <View style={{ alignItems: 'center', marginBottom: 16 }}>
+          <View style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: colors.gray[200] }} />
+        </View>
+        {Platform.OS === 'web' && (
+          <span style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: 17, fontWeight: 700, color: colors.gray[900], display: 'block', marginBottom: 16 } as any}>
+            Add Payout Method
+          </span>
+        )}
+        <View style={{ gap: 10 } as any}>
+          <Pressable
+            onPress={() => setView('addBank')}
+            style={{
+              flexDirection: 'row', alignItems: 'center', gap: 14,
+              backgroundColor: colors.gray[50], borderRadius: 14,
+              paddingHorizontal: 16, paddingVertical: 16,
+            } as any}
+          >
+            {renderBankBuildingSVG()}
+            <View style={{ flex: 1 }}>
+              {Platform.OS === 'web' && (
+                <>
+                  <span style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: 15, fontWeight: 600, color: colors.gray[900], display: 'block' } as any}>
+                    Bank Account
+                  </span>
+                  <span style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: 12, color: colors.gray[500], marginTop: 2 } as any}>
+                    ACH direct deposit
+                  </span>
+                </>
+              )}
+            </View>
+            {renderChevronRightSVG()}
+          </Pressable>
+          <Pressable
+            onPress={() => setView('addCard')}
+            style={{
+              flexDirection: 'row', alignItems: 'center', gap: 14,
+              backgroundColor: colors.gray[50], borderRadius: 14,
+              paddingHorizontal: 16, paddingVertical: 16,
+            } as any}
+          >
+            {Platform.OS === 'web' && (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="4" width="20" height="16" rx="2" stroke={colors.primary[500]} strokeWidth="1.5" />
+                <path d="M2 10H22" stroke={colors.primary[500]} strokeWidth="1.5" />
+                <path d="M6 15H10" stroke={colors.primary[500]} strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            )}
+            <View style={{ flex: 1 }}>
+              {Platform.OS === 'web' && (
+                <>
+                  <span style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: 15, fontWeight: 600, color: colors.gray[900], display: 'block' } as any}>
+                    Debit Card
+                  </span>
+                  <span style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: 12, color: colors.gray[500], marginTop: 2 } as any}>
+                    Visa or Mastercard
+                  </span>
+                </>
+              )}
+            </View>
+            {renderChevronRightSVG()}
+          </Pressable>
+        </View>
+      </View>
+    </View>
+  );
+
+  // ── Add Bank Account form ──
+  const [newBankHolder, setNewBankHolder] = useState('');
+  const [newBankName, setNewBankName] = useState('');
+  const [newBankRouting, setNewBankRouting] = useState('');
+  const [newBankAccount, setNewBankAccount] = useState('');
+  const [newBankType, setNewBankType] = useState<'checking' | 'savings'>('checking');
+  const [bankFormErrors, setBankFormErrors] = useState<Record<string, string>>({});
+
+  const validateBankForm = (): boolean => {
+    const errors: Record<string, string> = {};
+    if (!newBankHolder.trim()) errors.holder = 'Account holder is required';
+    if (!newBankName.trim()) errors.name = 'Bank name is required';
+    if (newBankRouting.replace(/\D/g, '').length !== 9) errors.routing = 'Routing number must be 9 digits';
+    if (newBankAccount.replace(/\D/g, '').length < 4) errors.account = 'Account number is required';
+    setBankFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleAddBank = () => {
+    if (!validateBankForm()) return;
+    const masked = '****' + newBankAccount.replace(/\D/g, '').slice(-4);
+    setBankName(newBankName);
+    setBankRouting('****' + newBankRouting.replace(/\D/g, '').slice(-4));
+    setBankAccount(masked);
+    setBankHolder(newBankHolder);
+    setBankType(newBankType);
+    setDefaultMethod('bank');
+    setNewBankHolder(''); setNewBankName(''); setNewBankRouting(''); setNewBankAccount('');
+    setBankFormErrors({});
+    Animated.spring(scaleAnim, { toValue: 1, useNativeDriver: Platform.OS !== 'web' }).start();
+    setView('bankSuccess');
+  };
+
+  const renderAddBankView = () => (
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFAFA' } as any}>
+      <StatusBarMock />
+      <View>
+        <Navbar title="Add Bank Account" onBack={() => { setView(role === 'ceo' ? 'addPicker' : 'list'); setBankFormErrors({}); }} />
+      </View>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 24 }}>
+        <View style={{ paddingHorizontal: 16, paddingVertical: 24, gap: 16 }}>
+          <Input
+            label="Account Holder Name"
+            placeholder="Company or personal name"
+            value={newBankHolder}
+            onChangeText={setNewBankHolder}
+            error={bankFormErrors.holder}
+          />
+          <Input
+            label="Bank Name"
+            placeholder="e.g. Chase, Bank of America"
+            value={newBankName}
+            onChangeText={setNewBankName}
+            error={bankFormErrors.name}
+          />
+          <Input
+            label="Routing Number (ABA)"
+            placeholder="9-digit routing number"
+            value={newBankRouting}
+            onChangeText={(t) => setNewBankRouting(t.replace(/\D/g, '').substring(0, 9))}
+            error={bankFormErrors.routing}
+            maxLength={9}
+          />
+          <Input
+            label="Account Number"
+            placeholder="Account number"
+            value={newBankAccount}
+            onChangeText={(t) => setNewBankAccount(t.replace(/\D/g, ''))}
+            error={bankFormErrors.account}
+          />
+          {/* Account Type toggle */}
+          {Platform.OS === 'web' && (
+            <View style={{ gap: 8 } as any}>
+              <span style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: 13, fontWeight: 600, color: colors.gray[500] } as any}>
+                Account Type
+              </span>
+              <View style={{ flexDirection: 'row', gap: 8 } as any}>
+                {(['checking', 'savings'] as const).map(t => (
+                  <Pressable
+                    key={t}
+                    onPress={() => setNewBankType(t)}
+                    style={{
+                      flex: 1, paddingVertical: 12, borderRadius: 12, alignItems: 'center',
+                      backgroundColor: newBankType === t ? colors.primary[500] : '#EFF2F7',
+                    } as any}
+                  >
+                    <span style={{
+                      fontFamily: 'Inter, system-ui, sans-serif', fontSize: 14, fontWeight: 600,
+                      color: newBankType === t ? '#FFFFFF' : colors.gray[600], textTransform: 'capitalize',
+                    } as any}>
+                      {t}
+                    </span>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+          )}
+          <View style={{ marginTop: 8 }}>
+            <Button title="Add Bank Account" variant="primary" onPress={handleAddBank} />
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+
+  // ── Bank Success ──
+  const renderBankSuccessView = () => (
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFAFA' } as any}>
+      <StatusBarMock />
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}>
+        <Animated.View style={{
+          width: 80, height: 80, borderRadius: 40,
+          backgroundColor: colors.success[500], justifyContent: 'center', alignItems: 'center', marginBottom: 24,
+          transform: [{ scale: scaleAnim }],
+        }}>
+          {Platform.OS === 'web' && (
+            <span style={{ fontSize: '44px', color: colors.white, fontWeight: 'bold' } as any}>✓</span>
+          )}
+        </Animated.View>
+        {Platform.OS === 'web' && (
+          <>
+            <span style={{ fontSize: 18, fontWeight: 700, color: colors.gray[900], marginBottom: 8, textAlign: 'center', fontFamily: 'Inter, system-ui, sans-serif' } as any}>
+              Bank Account Added
+            </span>
+            <span style={{ fontSize: 14, color: colors.gray[700], marginBottom: 24, textAlign: 'center', fontFamily: 'Inter, system-ui, sans-serif' } as any}>
+              {bankName} has been connected as your payout method
+            </span>
+          </>
+        )}
+        <Button title="Done" variant="primary" onPress={() => { scaleAnim.setValue(0); setView('list'); }} />
+      </ScrollView>
+    </SafeAreaView>
+  );
+
   // Render based on current view
   if (view === 'addCard') return renderAddCardView();
+  if (view === 'addBank') return renderAddBankView();
   if (view === 'success') return renderSuccessView();
+  if (view === 'bankSuccess') return renderBankSuccessView();
 
   // List is always the base, with overlays on top
   return (
     <View style={{ flex: 1 }}>
       {renderListView()}
+      {view === 'addPicker' && renderAddPickerSheet()}
       {view === 'cardDetail' && renderCardActionSheet()}
       {view === 'deleteConfirm' && renderDeleteConfirmOverlay()}
     </View>
