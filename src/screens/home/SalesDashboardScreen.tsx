@@ -30,51 +30,48 @@ const ACCENT_PURPLE = '#7C3AED';
 const ACCENT_ORANGE = '#F59E0B';
 
 /* ═══════════════════════════════════════════
-   Icon components — Sales-specific
+   Icon components — from user's Icons folder
+   (Star, Sync, Money-bag, Add-Product, Cards-with-dollar)
    ═══════════════════════════════════════════ */
 
-const TrendingUpIcon = ({ color, size = 18 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M3 12L9 6L13 10L21 2" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M21 2H15V8" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+/* Star — for Proposals Sent (from star.svg) */
+const StarIcon = ({ color, size = 18 }: { color: string; size?: number }) => (
+  <svg width={size} height={size} viewBox="-15 -12 100 100" fill={color}>
+    <g transform="matrix(.957 0 0 .957 15.652 11.478)"><path clipRule="evenodd" d="m34.669548-8.4613094c.1628304-.5473452.6672783-.9250927 1.2395058-.9250927s1.0766754.3777475 1.2395058.9250927c0 0 2.2686234 7.6043649 4.7001495 15.7606297 3.8745232 12.9943981 14.0393524 23.1591949 27.0337143 27.0337181 8.1562347 2.4315262 15.7605972 4.7001457 15.7605972 4.7001457.5473785.1628342.9250946.6672783.9250946 1.2395096 0 .5722275-.3777161 1.0766716-.9250946 1.2395058 0 0-7.6043625 2.2686234-15.7605972 4.7001495-12.9943619 3.8745193-23.1591911 14.0393524-27.0337143 27.0337143-2.4315262 8.1562347-4.7001495 15.7605972-4.7001495 15.7605972-.1628304.5473785-.6672783.9250946-1.2395058.9250946s-1.0766754-.3777161-1.2395058-.9250946c0 0-2.2686234-7.6043625-4.7001495-15.7605972-3.8745213-12.9943619-14.0393543-23.159195-27.033716-27.0337144-8.1562309-2.4315262-15.7605953-4.7001495-15.7605953-4.7001495-.5473795-.1628342-.9250927-.6672783-.9250927-1.2395058 0-.5722313.3777132-1.0766754.9250927-1.2395096 0 0 7.6043644-2.2686195 15.7605953-4.7001457 12.9943619-3.8745232 23.1591969-14.03932 27.0337162-27.0337181 2.431526-8.1562649 4.7001493-15.7606296 4.7001493-15.7606296z" fillRule="evenodd"/></g>
   </svg>
 );
 
-const CheckCircleIcon = ({ color, size = 18 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <circle cx="12" cy="12" r="9" stroke={color} strokeWidth="2"/>
-    <path d="M8 12L11 15L16 9" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+/* Sync / Arrows — for Conversion Rate (from sync.svg) */
+const SyncIcon = ({ color, size = 18 }: { color: string; size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 491.5 491.5" fill={color}>
+    <path d="m437 94.3-22.7 21.4c-3.5 3.3-8.8 3.4-11.5-.5-59.6-83.6-174.2-109.8-264.9-57.4-51.3 29.6-84.6 78.4-96.2 132-.7 3.4 0 6.7 2.3 9.4 2.2 2.7 5.2 4.1 8.8 4.1l33.4-.3c5.1 0 9.4-3.4 10.7-8.3 9.7-36.5 33.3-69.2 68.5-89.6 63.7-36.8 143.6-20.4 188.1 35.5 3.5 4.3.9 10.1-4.4 11.8l-27.3 8.5c-8.7 2.7-11.2 14.3-2.9 18.2l109.9 50.9c6.7 3.1 13.8-1.1 14.5-8.4l10.9-120.6c.8-9.2-10.6-12.9-17.2-6.7z"/>
+    <path d="m438.8 288.2-33.4.3c-5.1 0-9.4 3.4-10.7 8.3-9.7 36.5-33.3 69.2-68.5 89.6-63.7 36.8-143.6 20.4-188.1-35.5-3.5-4.3-.9-10.1 4.4-11.8l27.3-8.5c8.7-2.7 11.2-14.3 2.9-18.2l-110-50.8c-6.7-3.1-13.8 1.1-14.5 8.4l-10.9 120.6c-.8 9.1 10.5 12.9 17.2 6.6l22.7-21.4c3.5-3.3 8.8-3.4 11.5.5 59.6 83.6 174.1 109.8 264.8 57.4 51.3-29.6 84.6-78.4 96.2-132 .7-3.4 0-6.7-2.3-9.4-2-2.7-5.1-4.1-8.6-4.1z"/>
   </svg>
 );
 
-const UsersIcon = ({ color, size = 18 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M23 11V21" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M19 17H23" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+/* Money bag — for Avg Deal Size (from money-bag.svg) */
+const MoneyBagIcon = ({ color, size = 18 }: { color: string; size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill={color}>
+    <path d="m10.533 7.397c1.115-.342 2.276-.536 3.475-.536s2.36.194 3.475.536c1.232-.901 2.042-2.347 2.042-3.991v-.624c-.001-.432-.351-.782-.783-.782h-9.469c-.432 0-.782.35-.782.782v.625c0 1.643.81 3.089 2.042 3.99z"/>
+    <path d="m23.01 4.796c-.497 0-.9.403-.9.9 0 .974-.792 1.765-1.766 1.765h-.778c-.158.194-.327.378-.507.554.69.328 1.356.715 1.987 1.176 1.631-.327 2.864-1.769 2.864-3.494 0-.498-.403-.901-.9-.901z"/>
+    <path d="m29.538 20.959c0 .738-1 1.385-2.506 1.741-.819.201-1.791.317-2.832.317-1.034 0-2.006-.116-2.825-.317-1.506-.356-2.506-1.003-2.506-1.741 0-1.139 2.388-2.065 5.332-2.065 2.949 0 5.337.926 5.337 2.065z"/>
+    <path d="m27.398 27.646c-.95.238-2.06.365-3.199.365-1.143 0-2.251-.128-3.207-.369-.92-.223-1.606-.515-2.124-.837v1.13c0 .738.993 1.379 2.492 1.747.819.201 1.798.318 2.839.318 1.048 0 2.02-.117 2.846-.317 1.5-.369 2.492-1.01 2.492-1.747v-1.132c-.52.324-1.211.618-2.139.842z"/>
+    <path d="m27.376 24.159c-.948.232-2.051.357-3.177.357-1.122 0-2.223-.125-3.183-.36-.936-.221-1.628-.519-2.148-.847v1.137c0 .738.993 1.379 2.492 1.741.819.207 1.798.324 2.839.324 1.048 0 2.02-.116 2.846-.324 1.5-.362 2.492-1.003 2.492-1.741v-1.14c-.522.331-1.218.631-2.161.853z"/>
+    <path d="m17.368 27.936v-3.488-.34-3.516c.311-2.216 3.597-3.197 6.832-3.197.255 0 .509.008.762.021-1.425-4.782-5.37-9.054-10.954-9.054-8.013 0-12.668 8.796-11.312 15.276 1.094 5.226 5.8 6.362 11.312 6.362 1.447 0 2.831-.088 4.115-.3-.615-.637-.755-1.301-.755-1.764z"/>
   </svg>
 );
 
-const FileIcon = ({ color, size = 18 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M13 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V9L13 2Z" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M13 2V9H20" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+/* Add Product — for Deals Closed (from add-product.svg) */
+const ClipboardIcon = ({ color, size = 18 }: { color: string; size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 28 28" fill={color}>
+    <path d="m22.7242928 2.0350215h-5.7215595v5.3175611c0 .5241585-.5896702.8407869-1.026392.5459514l-1.408597-.9390202c-.34935-.2293239-.7970676-.2293239-1.1355553 0l-1.4194603.9390202c-.4367876.2948346-1.015461-.0217929-1.015461-.5459514v-5.3175611h-5.7215595c-1.8125958 0-3.2757082 1.4741087-3.2757082 3.2757085v17.37854c0 1.8125954 1.4631124 3.2757092 3.2757082 3.2757092h17.4485855c1.8015986 0 3.2757063-1.4631138 3.2757063-3.2757092v-17.37854c0-1.8015998-1.4741077-3.2757085-3.2757072-3.2757085zm-6.169344 16.8337224c-.0005341 0-.0010662 0-.0010662 0l-1.4661121-.001667-.0016661 1.4662457c-.0005331.6029987-.4894361 1.0908356-1.0919027 1.0908356-.0005331 0-.0010662 0-.0010662 0-.6029987-.0005322-1.0913696-.4899693-1.0908365-1.092968l.0016661-1.4666443-1.4657106-.001667c-.6029997-.0005322-1.0913696-.4899693-1.0908365-1.092968.0005331-.6030006.4894361-1.0908375 1.0919027-1.0908375h.0010662l1.4661112.001667.0016661-1.4657116c.0005331-.6029997.4894371-1.0908365 1.0919027-1.0908365h.0010662c.6029987.0005331 1.0913696.4899693 1.0908365 1.0929689l-.0016661 1.4661102 1.4657116.001667c.6029987.0005322 1.0913696.4899693 1.0908356 1.092968-.0005323.6030007-.4894372 1.0908375-1.0919019 1.0908375z"/>
   </svg>
 );
 
-const DollarIcon = ({ color, size = 18 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M12 1V23" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M17 5H7C5.9 5 5 5.9 5 7V17C5 18.1 5.9 19 7 19H17C18.1 19 19 18.1 19 17V7C19 5.9 18.1 5 17 5Z" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-const PercentIcon = ({ color, size = 18 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <circle cx="6" cy="6" r="2" stroke={color} strokeWidth="2"/>
-    <circle cx="18" cy="18" r="2" stroke={color} strokeWidth="2"/>
-    <path d="M18 6L6 18" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+/* Cards with dollar sign — for Revenue hero (from cards-with-dollar-sign.svg) */
+const CardDollarIcon = ({ color, size = 18 }: { color: string; size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 467.6 467.6" fill={color}>
+    <path d="M209.3,219.916c4.3-3.7,10.4-6.1,18.4-6.7v45.899c-9.8-3.1-16.5-6.699-20.2-9.8c-3.7-3.7-5.5-8-5.5-14.1 C202.6,229.116,205,224.216,209.3,219.916z M388.6,72.416c-8-29.4-31.199-40.4-58.1-33L93,103.016h303.6L388.6,72.416z M467.6,178.916v204.4c0,26.3-20.8,47.101-47.1,47.101H47.1c-26.3,0-47.1-20.801-47.1-47.101v-204.4c0-26.3,20.8-47.1,47.1-47.1 h373.3C446.2,131.815,467.6,153.216,467.6,178.916z M304.8,318.415c0-15.301-4.899-26.899-14.7-35.5 c-9.8-8.601-24.5-14.699-44.699-19H244.8v-49.601c13.5,1.8,26.3,7.3,37.9,15.3l17.1-24.5c-17.1-11.6-35.5-18.4-55.1-19.6v-13.5 h-17.1l0,0v12.9c-17.1,0.6-30.6,6.1-41.6,15.9c-10.4,9.8-15.9,22-15.9,37.3s4.9,26.9,14.1,34.3c9.2,8,23.9,14.102,43.5,19v51.4 c-15.9-2.4-30.6-10.4-45.9-23.3l-19.6,23.3c19,16.5,41,26.3,64.9,28.8v19.602h17.1v-19c17.699-.602,32.398-6.102,43.5-15.9 C299.3,346.016,304.8,333.716,304.8,318.415z M244.8,295.815v47.7c8.601-.601,15.3-3.101,20.2-7.3 c4.899-4.301,7.3-9.2,7.3-15.301s-1.8-11-5.5-14.699C262.6,302.516,255.8,298.915,244.8,295.815z"/>
   </svg>
 );
 
@@ -594,14 +591,14 @@ export const SalesDashboardScreen: React.FC<SalesDashboardScreenProps> = ({
                 value={String(d.dealsClosed)}
                 sub={d.dealsClosedTrend}
                 color={colors.primary[500]}
-                icon={<CheckCircleIcon color={colors.primary[500]} />}
+                icon={<ClipboardIcon color={colors.primary[500]} />}
               />
               <MetricCard
                 label="Conversion Rate"
                 value={d.conversionRate}
                 sub={d.conversionSub}
                 color={colors.success[500]}
-                icon={<PercentIcon color={colors.success[500]} />}
+                icon={<SyncIcon color={colors.success[500]} />}
               />
             </div>
             <div style={{ display: 'flex', flexDirection: 'row', gap: 10, marginBottom: 12, animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.14s both' } as any}>
@@ -609,15 +606,15 @@ export const SalesDashboardScreen: React.FC<SalesDashboardScreenProps> = ({
                 label="Proposals Sent"
                 value={String(d.proposalsSent)}
                 sub={d.proposalsTrend}
-                color={colors.primary[500]}
-                icon={<FileIcon color={colors.primary[500]} />}
+                color={colors.warning[500]}
+                icon={<StarIcon color={colors.warning[500]} />}
               />
               <MetricCard
                 label="Avg Deal Size"
                 value={d.avgDealSize}
                 sub={d.avgDealSub}
-                color={ACCENT_ORANGE}
-                icon={<DollarIcon color={ACCENT_ORANGE} />}
+                color={ACCENT_PURPLE}
+                icon={<MoneyBagIcon color={ACCENT_PURPLE} />}
               />
             </div>
 
