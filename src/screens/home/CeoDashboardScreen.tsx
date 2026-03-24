@@ -11,7 +11,7 @@
  * 6. Bottom stats row
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -75,6 +75,169 @@ const CardDollarIcon = ({ color, size = 18 }: { color: string; size?: number }) 
     <path d="M209.3,219.916c4.3-3.7,10.4-6.1,18.4-6.7v45.899c-9.8-3.1-16.5-6.699-20.2-9.8c-3.7-3.7-5.5-8-5.5-14.1 C202.6,229.116,205,224.216,209.3,219.916z M388.6,72.416c-8-29.4-31.199-40.4-58.1-33L93,103.016h303.6L388.6,72.416z M467.6,178.916v204.4c0,26.3-20.8,47.101-47.1,47.101H47.1c-26.3,0-47.1-20.801-47.1-47.101v-204.4c0-26.3,20.8-47.1,47.1-47.1 h373.3C446.2,131.815,467.6,153.216,467.6,178.916z M304.8,318.415c0-15.301-4.899-26.899-14.7-35.5 c-9.8-8.601-24.5-14.699-44.699-19H244.8v-49.601c13.5,1.8,26.3,7.3,37.9,15.3l17.1-24.5c-17.1-11.6-35.5-18.4-55.1-19.6v-13.5 h-17.1l0,0v12.9c-17.1,0.6-30.6,6.1-41.6,15.9c-10.4,9.8-15.9,22-15.9,37.3s4.9,26.9,14.1,34.3c9.2,8,23.9,14.102,43.5,19v51.4 c-15.9-2.4-30.6-10.4-45.9-23.3l-19.6,23.3c19,16.5,41,26.3,64.9,28.8v19.602h17.1v-19c17.699-.602,32.398-6.102,43.5-15.9 C299.3,346.016,304.8,333.716,304.8,318.415z M244.8,295.815v47.7c8.601-.601,15.3-3.101,20.2-7.3 c4.899-4.301,7.3-9.2,7.3-15.301s-1.8-11-5.5-14.699C262.6,302.516,255.8,298.915,244.8,295.815z"/>
   </svg>
 );
+
+/* ═══════════════════════════════════════════
+   Animations — global CSS keyframes + helpers
+   ═══════════════════════════════════════════ */
+
+const ANIMATION_CSS = `
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes countPulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+/* Interactive hover / press effects */
+.ceo-card-interactive {
+  transition: transform 0.18s ease, background-color 0.2s ease;
+}
+.ceo-card-interactive:hover {
+  transform: scale(1.015);
+}
+.ceo-card-interactive:active {
+  transform: scale(0.975);
+}
+.ceo-mover-row {
+  transition: background-color 0.18s ease, transform 0.15s ease;
+  border-radius: 12px;
+}
+.ceo-mover-row:hover {
+  background-color: #F9FAFB;
+}
+.ceo-mover-row:active {
+  transform: scale(0.98);
+}
+.ceo-chip {
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+.ceo-chip:hover {
+  transform: scale(1.04);
+}
+.ceo-chip:active {
+  transform: scale(0.95);
+}
+.ceo-btn-primary {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.ceo-btn-primary:hover {
+  opacity: 0.92;
+}
+.ceo-btn-primary:active {
+  transform: scale(0.97);
+}
+`;
+
+/* Inject animation CSS once */
+let cssInjected = false;
+const injectAnimationCSS = () => {
+  if (cssInjected || typeof document === 'undefined') return;
+  const style = document.createElement('style');
+  style.textContent = ANIMATION_CSS;
+  document.head.appendChild(style);
+  cssInjected = true;
+};
+
+/* Animated page wrapper — slides in from right by default */
+const AnimatedPage: React.FC<{
+  direction?: 'right' | 'left' | 'up' | 'fade';
+  duration?: number;
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+}> = ({ direction = 'right', duration = 0.32, children, style }) => {
+  const anim = direction === 'right' ? 'slideInRight' :
+               direction === 'left' ? 'slideInLeft' :
+               direction === 'up' ? 'fadeInUp' : 'fadeIn';
+  return (
+    <div style={{
+      animation: `${anim} ${duration}s cubic-bezier(0.22, 1, 0.36, 1) both`,
+      height: '100%', display: 'flex', flexDirection: 'column',
+      ...style,
+    } as any}>
+      {children}
+    </div>
+  );
+};
+
+/* Staggered fade-in for list items */
+const StaggerItem: React.FC<{
+  index: number;
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+}> = ({ index, children, style }) => (
+  <div style={{
+    animation: `fadeInUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) both`,
+    animationDelay: `${index * 0.05}s`,
+    ...style,
+  } as any}>
+    {children}
+  </div>
+);
+
+/* Animated number — smoothly counts up on mount / value change */
+const AnimatedNumber: React.FC<{
+  value: string;
+  style: React.CSSProperties;
+}> = ({ value, style }) => {
+  const [display, setDisplay] = useState(value);
+  const prevRef = useRef(value);
+
+  useEffect(() => {
+    if (prevRef.current === value) return;
+    prevRef.current = value;
+
+    // Parse numeric part for counting animation
+    const numMatch = value.match(/([$%]?)([0-9,.]+)(.*)/);
+    if (!numMatch) { setDisplay(value); return; }
+    const prefix = numMatch[1] || '';
+    const target = parseFloat(numMatch[2].replace(/,/g, ''));
+    const suffix = numMatch[3] || '';
+    const isDecimal = numMatch[2].includes('.');
+    const hasComma = numMatch[2].includes(',');
+
+    const startMatch = display.match(/([$%]?)([0-9,.]+)(.*)/);
+    const start = startMatch ? parseFloat(startMatch[2].replace(/,/g, '')) : 0;
+
+    let frame = 0;
+    const totalFrames = 20;
+    const step = () => {
+      frame++;
+      const t = frame / totalFrames;
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      const current = start + (target - start) * eased;
+      const formatted = isDecimal ? current.toFixed(numMatch[2].split('.')[1]?.length || 1) :
+                        hasComma ? Math.round(current).toLocaleString() :
+                        String(Math.round(current));
+      setDisplay(`${prefix}${formatted}${suffix}`);
+      if (frame < totalFrames) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [value]);
+
+  // Initial mount — just set directly
+  useEffect(() => { setDisplay(value); }, []);
+
+  return <span style={style as any}>{display}</span>;
+};
 
 /* ═══════════════════════════════════════════
    Types
@@ -482,6 +645,7 @@ const DetailScreen: React.FC<{
   };
 
   return (
+    <AnimatedPage direction="right" duration={0.3}>
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: '#F5F5F7' } as any}>
       {/* ── Navigation Bar (iOS HIG style) ── */}
       <div style={{
@@ -515,6 +679,7 @@ const DetailScreen: React.FC<{
           const isCustom = p === 'custom';
           return (
             <div
+              className="ceo-chip"
               key={p}
               onClick={() => {
                 if (isCustom) { setFilterPeriod('custom'); setShowCustomPicker(!showCustomPicker); }
@@ -547,9 +712,16 @@ const DetailScreen: React.FC<{
       </div>
 
       {/* ── Custom Date Picker ── */}
-      {showCustomPicker && (
+      <div style={{
+        display: 'grid',
+        gridTemplateRows: showCustomPicker ? '1fr' : '0fr',
+        transition: 'grid-template-rows 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+        margin: '0 16px',
+        marginBottom: showCustomPicker ? 12 : 0,
+      } as any}>
+        <div style={{ overflow: 'hidden' } as any}>
         <div style={{
-          margin: '0 16px 12px', padding: 16, backgroundColor: '#FFFFFF',
+          padding: 16, backgroundColor: '#FFFFFF',
           borderRadius: 16,
         } as any}>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 12 } as any}>
@@ -584,6 +756,7 @@ const DetailScreen: React.FC<{
             </div>
           </div>
           <div
+            className="ceo-btn-primary"
             onClick={() => setShowCustomPicker(false)}
             style={{
               width: '100%', height: 50, borderRadius: 12,
@@ -595,7 +768,8 @@ const DetailScreen: React.FC<{
             <span style={{ fontFamily: F, fontSize: 14, fontWeight: 600, color: '#FFFFFF' } as any}>Apply</span>
           </div>
         </div>
-      )}
+        </div>
+      </div>
 
       {/* ── Scrollable Content ── */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '0 16px 0' } as any}>
@@ -630,12 +804,15 @@ const DetailScreen: React.FC<{
         </div>
 
         {/* Row List */}
-        {data.rows.map((row, i) => renderRow(row, i))}
+        {data.rows.map((row, i) => (
+          <StaggerItem key={i} index={i}>{renderRow(row, i)}</StaggerItem>
+        ))}
 
         {/* Bottom spacer so last card is fully visible when scrolled */}
         <div style={{ height: 48 } as any} />
       </div>
     </div>
+    </AnimatedPage>
   );
 };
 
@@ -652,6 +829,7 @@ const MoverDetailScreen: React.FC<{
   if (!detail) return null;
 
   return (
+    <AnimatedPage direction="right" duration={0.3}>
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: '#F5F5F7' } as any}>
       {/* Nav bar */}
       <div style={{
@@ -671,7 +849,7 @@ const MoverDetailScreen: React.FC<{
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '0 16px 0' } as any}>
         {/* Profile header */}
-        <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: 20, marginBottom: 12 } as any}>
+        <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: 20, marginBottom: 12, animation: 'scaleIn 0.35s cubic-bezier(0.22,1,0.36,1) both' } as any}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 } as any}>
             <div style={{
               width: 52, height: 52, borderRadius: 16, backgroundColor: colors.primary[50],
@@ -695,7 +873,7 @@ const MoverDetailScreen: React.FC<{
         </div>
 
         {/* Stats grid */}
-        <div style={{ display: 'flex', gap: 10, marginBottom: 12 } as any}>
+        <div style={{ display: 'flex', gap: 10, marginBottom: 12, animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.08s both' } as any}>
           {[
             { label: 'Revenue', value: `$${detail.totalRevenue.toLocaleString()}`, color: colors.primary[500] },
             { label: 'Moves', value: String(detail.completedMoves), color: colors.gray[900] },
@@ -707,7 +885,7 @@ const MoverDetailScreen: React.FC<{
           ))}
         </div>
 
-        <div style={{ display: 'flex', gap: 10, marginBottom: 12 } as any}>
+        <div style={{ display: 'flex', gap: 10, marginBottom: 12, animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.14s both' } as any}>
           {[
             { label: 'On-time', value: detail.onTime, color: colors.success[500] },
             { label: 'Cancellation', value: detail.cancellation, color: colors.error[500] },
@@ -726,7 +904,8 @@ const MoverDetailScreen: React.FC<{
             Recent Jobs
           </span>
           {detail.recentJobs.map((job, i) => (
-            <div key={i} style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '14px 16px', marginBottom: 8 } as any}>
+            <StaggerItem key={i} index={i}>
+            <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '14px 16px', marginBottom: 8 } as any}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 } as any}>
                 <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900] } as any}>{job.client}</span>
                 <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900] } as any}>{job.amount}</span>
@@ -738,12 +917,14 @@ const MoverDetailScreen: React.FC<{
                 <span style={{ fontFamily: F, fontSize: 12, fontWeight: 600, color: colors.warning[600] } as any}>{job.rating}</span>
               </div>
             </div>
+            </StaggerItem>
           ))}
         </div>
 
         <div style={{ height: 48 } as any} />
       </div>
     </div>
+    </AnimatedPage>
   );
 };
 
@@ -759,6 +940,9 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
   const [drillDown, setDrillDown] = useState<MetricKey | null>(null);
   const [selectedMover, setSelectedMover] = useState<number | null>(null);
 
+  /* Inject animation CSS on mount */
+  useEffect(() => { injectAnimationCSS(); }, []);
+
   if (Platform.OS !== 'web') return null;
 
   const d = DATA[period];
@@ -770,11 +954,11 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
     label: string; value: string; sub?: string; color: string; icon: React.ReactNode; metric: MetricKey;
   }) => (
     <div
+      className="ceo-card-interactive"
       onClick={() => setDrillDown(metric)}
       style={{
         flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16,
         padding: '16px 14px', minWidth: 0, cursor: 'pointer',
-        transition: 'transform 0.15s ease',
       } as any}
     >
       {/* Icon + Value + Chevron — one row */}
@@ -786,9 +970,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
         } as any}>
           {icon}
         </div>
-        <span style={{ fontFamily: F, fontSize: 22, fontWeight: 800, color: colors.gray[900], flex: 1, letterSpacing: -0.5 } as any}>
-          {value}
-        </span>
+        <AnimatedNumber value={value} style={{ fontFamily: F, fontSize: 22, fontWeight: 800, color: colors.gray[900], flex: 1, letterSpacing: -0.5 }} />
         <ChevronRightIcon color={colors.gray[200]} />
       </div>
       <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.gray[400], display: 'block' } as any}>
@@ -821,7 +1003,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
               <div style={{ padding: '12px 16px 120px' } as any}>
 
                 {/* ── Header ── */}
-                <div style={{ marginBottom: 20 } as any}>
+                <div style={{ marginBottom: 20, animation: 'fadeIn 0.4s ease both' } as any}>
                   <span style={{ fontFamily: F, fontSize: 14, fontWeight: 500, color: colors.gray[400], display: 'block' } as any}>
                     Good morning
                   </span>
@@ -832,10 +1014,12 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
 
                 {/* ── Revenue Hero Card (white, no gradient) ── */}
                 <div
+                  className="ceo-card-interactive"
                   onClick={() => setDrillDown('revenue')}
                   style={{
                     backgroundColor: '#FFFFFF', borderRadius: 16,
                     padding: '20px', marginBottom: 12, cursor: 'pointer',
+                    animation: 'fadeInUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both',
                   } as any}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 } as any}>
@@ -844,9 +1028,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                     </span>
                     <ChevronRightIcon color={colors.gray[200]} />
                   </div>
-                  <span style={{ fontFamily: F, fontSize: 34, fontWeight: 800, color: colors.gray[900], display: 'block', letterSpacing: -1 } as any}>
-                    ${d.revenue.toLocaleString()}
-                  </span>
+                  <AnimatedNumber value={`$${d.revenue.toLocaleString()}`} style={{ fontFamily: F, fontSize: 34, fontWeight: 800, color: colors.gray[900], display: 'block', letterSpacing: -1 }} />
                   <span style={{ fontFamily: F, fontSize: 13, fontWeight: 600, color: colors.success[500], display: 'block', marginTop: 6 } as any}>
                     {d.revenueTrend}
                   </span>
@@ -855,6 +1037,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                   <div style={{ display: 'flex', gap: 8, marginTop: 16 } as any}>
                     {(['week', 'month'] as const).map(p => (
                       <div
+                        className="ceo-chip"
                         key={p}
                         onClick={(e: any) => { e.stopPropagation(); setPeriod(p); }}
                         style={{
@@ -871,7 +1054,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                 </div>
 
                 {/* ── Key Metrics Grid (2x2) ── */}
-                <div style={{ display: 'flex', flexDirection: 'row', gap: 10, marginBottom: 10 } as any}>
+                <div style={{ display: 'flex', flexDirection: 'row', gap: 10, marginBottom: 10, animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.08s both' } as any}>
                   <MetricCard
                     label="Total Orders"
                     value={String(d.orders)}
@@ -889,7 +1072,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                     icon={<StarIcon color={colors.warning[500]} />}
                   />
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'row', gap: 10, marginBottom: 12 } as any}>
+                <div style={{ display: 'flex', flexDirection: 'row', gap: 10, marginBottom: 12, animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.14s both' } as any}>
                   <MetricCard
                     label="Conversion Rate"
                     value={d.conversion}
@@ -910,16 +1093,15 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
 
                 {/* ── Revenue Chart (tappable) ── */}
                 <div
+                  className="ceo-card-interactive"
                   onClick={() => setDrillDown('revenue')}
-                  style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '20px 16px', marginBottom: 12, cursor: 'pointer' } as any}
+                  style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '20px 16px', marginBottom: 12, cursor: 'pointer', animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.2s both' } as any}
                 >
                   <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 } as any}>
                     <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900] } as any}>{d.chartLabel}</span>
                     <ChevronRightIcon color={colors.gray[200]} />
                   </div>
-                  <span style={{ fontFamily: F, fontSize: 22, fontWeight: 800, color: colors.gray[900], display: 'block', marginBottom: 16, letterSpacing: -0.5 } as any}>
-                    ${totalChart.toLocaleString()}
-                  </span>
+                  <AnimatedNumber value={`$${totalChart.toLocaleString()}`} style={{ fontFamily: F, fontSize: 22, fontWeight: 800, color: colors.gray[900], display: 'block', marginBottom: 16, letterSpacing: -0.5 }} />
                   <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: 6, height: 120 } as any}>
                     {d.chart.map((c, i) => {
                       const h = Math.max((c.value / maxRev) * 100, 8);
@@ -944,7 +1126,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                 </div>
 
                 {/* ── Top Movers Leaderboard ── */}
-                <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '20px 16px', marginBottom: 12 } as any}>
+                <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '20px 16px', marginBottom: 12, animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.26s both' } as any}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 } as any}>
                     <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900] } as any}>
                       Top Movers
@@ -954,9 +1136,9 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                     </span>
                   </div>
                   {TOP_MOVERS.map((mover, i) => (
-                    <div key={i} onClick={() => setSelectedMover(i)} style={{
+                    <div key={i} className="ceo-mover-row" onClick={() => setSelectedMover(i)} style={{
                       display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 12,
-                      padding: '10px 0', cursor: 'pointer',
+                      padding: '10px 4px', cursor: 'pointer',
                     } as any}>
                       {/* Rank */}
                       <div style={{
@@ -1005,13 +1187,13 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                 </div>
 
                 {/* ── Operational KPIs ── */}
-                <div style={{ display: 'flex', flexDirection: 'row', gap: 10, marginBottom: 12 } as any}>
+                <div style={{ display: 'flex', flexDirection: 'row', gap: 10, marginBottom: 12, animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.32s both' } as any}>
                   {[
                     { key: 'onTime' as MetricKey, value: d.onTime, label: 'On-time Rate', sub: period === 'week' ? '↑ vs last week' : '↓ 1% vs last month', color: colors.success[500] },
                     { key: 'cancellation' as MetricKey, value: d.cancellation, label: 'Cancellation', sub: period === 'week' ? '↓ 0.4% improved' : '↑ 0.3% vs last month', color: colors.error[500] },
                     { key: 'avgTime' as MetricKey, value: d.avgMoveTime, label: 'Avg Move Time', sub: period === 'week' ? '↓ 12 min faster' : '↑ 18 min slower', color: colors.primary[500] },
                   ].map(stat => (
-                    <div key={stat.key} onClick={() => setDrillDown(stat.key)} style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px 14px', cursor: 'pointer' } as any}>
+                    <div key={stat.key} className="ceo-card-interactive" onClick={() => setDrillDown(stat.key)} style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px 14px', cursor: 'pointer' } as any}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' } as any}>
                         <span style={{ fontFamily: F, fontSize: 22, fontWeight: 800, color: stat.color, display: 'block' } as any}>{stat.value}</span>
                         <ChevronRightIcon color={colors.gray[200]} />
