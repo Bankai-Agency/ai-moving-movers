@@ -29,6 +29,8 @@ const F = fontFamily.primary;
 const ACCENT_PURPLE = '#7C3AED';
 const ACCENT_ORANGE = '#F59E0B';
 
+type SalesMetricKey = 'dealsClosed' | 'conversionRate' | 'proposalsSent' | 'avgDealSize' | 'salesRevenue';
+
 /* ═══════════════════════════════════════════
    Icon components — from user's Icons folder
    (Star, Sync, Money-bag, Add-Product, Cards-with-dollar)
@@ -78,6 +80,12 @@ const CardDollarIcon = ({ color, size = 18 }: { color: string; size?: number }) 
 const ChevronRightIcon = ({ color }: { color: string }) => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
     <path d="M9 6L15 12L9 18" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+const BackIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+    <path d="M15 18L9 12L15 6" stroke={colors.primary[500]} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
 
@@ -279,6 +287,263 @@ const SALES_NOTIFS = [
 ];
 
 /* ═══════════════════════════════════════════
+   Drill-down Detail Screen — Sales Metrics
+   ═══════════════════════════════════════════ */
+
+interface SalesDetailConfig {
+  title: string;
+  color: string;
+  icon: React.ReactNode;
+}
+
+const SALES_METRIC_CONFIG: Record<SalesMetricKey, SalesDetailConfig> = {
+  dealsClosed: { title: 'Deals Closed', color: colors.primary[500], icon: <ClipboardIcon color={colors.primary[500]} size={20} /> },
+  conversionRate: { title: 'Conversion Rate', color: colors.success[500], icon: <SyncIcon color={colors.success[500]} size={20} /> },
+  proposalsSent: { title: 'Proposals Sent', color: colors.warning[500], icon: <StarIcon color={colors.warning[500]} size={20} /> },
+  avgDealSize: { title: 'Avg Deal Size', color: ACCENT_PURPLE, icon: <MoneyBagIcon color={ACCENT_PURPLE} size={20} /> },
+  salesRevenue: { title: 'Sales Revenue', color: colors.primary[500], icon: <CardDollarIcon color={colors.primary[500]} size={20} /> },
+};
+
+const SALES_DRILL_DOWN: Record<SalesMetricKey, { rows: any[] }> = {
+  dealsClosed: {
+    rows: [
+      { date: 'Mar 23', client: 'Sarah Johnson', route: 'Hollywood → Pasadena', amount: '$1,850', status: 'Closed', rooms: 3 },
+      { date: 'Mar 22', client: 'Mike Chen', route: 'Venice → Beverly Hills', amount: '$2,100', status: 'Closed', rooms: 4 },
+      { date: 'Mar 21', client: 'David Brown', route: 'Downtown → Koreatown', amount: '$1,450', status: 'Closed', rooms: 3 },
+      { date: 'Mar 19', client: 'James Taylor', route: 'WeHo → Silver Lake', amount: '$1,200', status: 'Closed', rooms: 2 },
+      { date: 'Mar 18', client: 'Olivia Martinez', route: 'Burbank → Pasadena', amount: '$980', status: 'Closed', rooms: 2 },
+      { date: 'Mar 17', client: 'Ryan Cooper', route: 'Santa Monica → Malibu', amount: '$2,400', status: 'Closed', rooms: 5 },
+      { date: 'Mar 16', client: 'Nicole Adams', route: 'Echo Park → Los Feliz', amount: '$750', status: 'Closed', rooms: 1 },
+      { date: 'Mar 15', client: 'Mark Wilson', route: 'Culver City → Marina', amount: '$1,100', status: 'Closed', rooms: 2 },
+    ],
+  },
+  conversionRate: {
+    rows: [
+      { date: 'Mar 23', proposals: 4, closed: 3, rate: '75%', source: 'Referral' },
+      { date: 'Mar 22', proposals: 6, closed: 2, rate: '33%', source: 'App' },
+      { date: 'Mar 21', proposals: 3, closed: 2, rate: '67%', source: 'App + Web' },
+      { date: 'Mar 20', proposals: 5, closed: 1, rate: '20%', source: 'Web' },
+      { date: 'Mar 19', proposals: 4, closed: 3, rate: '75%', source: 'Referral' },
+      { date: 'Mar 18', proposals: 2, closed: 1, rate: '50%', source: 'App' },
+    ],
+  },
+  proposalsSent: {
+    rows: [
+      { date: 'Mar 23', client: 'Emma Wilson', route: 'Santa Monica → Westwood', amount: '$980', status: 'Pending', rooms: 2 },
+      { date: 'Mar 22', client: 'Chris Lee', route: 'DTLA → Koreatown', amount: '$1,350', status: 'Viewed', rooms: 3 },
+      { date: 'Mar 22', client: 'Amy Zhang', route: 'Pasadena → Arcadia', amount: '$620', status: 'Accepted', rooms: 1 },
+      { date: 'Mar 21', client: 'David Brown', route: 'Downtown → Koreatown', amount: '$1,450', status: 'Accepted', rooms: 3 },
+      { date: 'Mar 20', client: 'Lisa Park', route: 'Burbank → Glendale', amount: '$750', status: 'Declined', rooms: 1 },
+      { date: 'Mar 19', client: 'Tom Harris', route: 'Venice → Culver City', amount: '$890', status: 'Pending', rooms: 2 },
+      { date: 'Mar 18', client: 'Sarah Johnson', route: 'Hollywood → Pasadena', amount: '$1,850', status: 'Accepted', rooms: 3 },
+      { date: 'Mar 17', client: 'Kevin White', route: 'Silver Lake → Echo Park', amount: '$540', status: 'Viewed', rooms: 1 },
+    ],
+  },
+  avgDealSize: {
+    rows: [
+      { date: 'Mar 23', deals: 3, totalRevenue: '$5,050', avg: '$1,683', trend: '↑' },
+      { date: 'Mar 22', deals: 2, totalRevenue: '$3,100', avg: '$1,550', trend: '→' },
+      { date: 'Mar 21', deals: 1, totalRevenue: '$1,450', avg: '$1,450', trend: '↓' },
+      { date: 'Mar 20', deals: 0, totalRevenue: '$0', avg: '—', trend: '—' },
+      { date: 'Mar 19', deals: 1, totalRevenue: '$1,200', avg: '$1,200', trend: '↓' },
+      { date: 'Mar 18', deals: 2, totalRevenue: '$3,380', avg: '$1,690', trend: '↑' },
+    ],
+  },
+  salesRevenue: {
+    rows: [
+      { date: 'Mar 23', deals: 3, revenue: '$5,050', avg: '$1,683', vs: '↑ 18%' },
+      { date: 'Mar 22', deals: 2, revenue: '$3,100', avg: '$1,550', vs: '↓ 5%' },
+      { date: 'Mar 21', deals: 1, revenue: '$1,450', avg: '$1,450', vs: '↑ 8%' },
+      { date: 'Mar 20', deals: 0, revenue: '$0', avg: '—', vs: '↓ 100%' },
+      { date: 'Mar 19', deals: 1, revenue: '$1,200', avg: '$1,200', vs: '→ 0%' },
+      { date: 'Mar 18', deals: 2, revenue: '$3,380', avg: '$1,690', vs: '↑ 22%' },
+    ],
+  },
+};
+
+/* Proposal status badge helper */
+const ProposalStatusBadge = ({ status }: { status: string }) => {
+  const isAccepted = status === 'Accepted';
+  const isPending = status === 'Pending';
+  const isViewed = status === 'Viewed';
+  const isDeclined = status === 'Declined';
+  const bg = isAccepted ? colors.success[50] : isPending ? colors.primary[50] : isViewed ? ACCENT_ORANGE + '15' : '#FEF3F2';
+  const fg = isAccepted ? colors.success[500] : isPending ? colors.primary[500] : isViewed ? ACCENT_ORANGE : colors.error[500];
+  return (
+    <span style={{
+      fontFamily: F, fontSize: 11, fontWeight: 700, color: fg,
+      backgroundColor: bg, padding: '4px 10px', borderRadius: 8,
+    } as any}>{status}</span>
+  );
+};
+
+/* Sales Detail Screen */
+const SalesDetailScreen: React.FC<{
+  metric: SalesMetricKey;
+  onBack: () => void;
+}> = ({ metric, onBack }) => {
+  const config = SALES_METRIC_CONFIG[metric];
+  const data = SALES_DRILL_DOWN[metric];
+  const [filterPeriod, setFilterPeriod] = useState<'7d' | '30d' | '90d'>('7d');
+
+  const summaryValue =
+    metric === 'dealsClosed' ? (filterPeriod === '7d' ? '8' : filterPeriod === '30d' ? '32' : '89') :
+    metric === 'conversionRate' ? (filterPeriod === '7d' ? '44%' : filterPeriod === '30d' ? '41%' : '38%') :
+    metric === 'proposalsSent' ? (filterPeriod === '7d' ? '18' : filterPeriod === '30d' ? '78' : '215') :
+    metric === 'avgDealSize' ? (filterPeriod === '7d' ? '$1,550' : filterPeriod === '30d' ? '$1,650' : '$1,580') :
+    (filterPeriod === '7d' ? '$12,400' : filterPeriod === '30d' ? '$52,800' : '$140,500');
+
+  const periodLabel = filterPeriod === '7d' ? 'Last 7 Days' : filterPeriod === '30d' ? 'Last 30 Days' : 'Last 90 Days';
+
+  const renderRow = (row: any, i: number) => {
+    if (metric === 'dealsClosed') return (
+      <div key={i} style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '14px 16px', marginBottom: 8 } as any}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 } as any}>
+          <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900] } as any}>{row.client}</span>
+          <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900] } as any}>{row.amount}</span>
+        </div>
+        <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[500], display: 'block' } as any}>{row.route} · {row.rooms} rooms</span>
+        <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[400], display: 'block', marginTop: 6 } as any}>{row.date}</span>
+      </div>
+    );
+    if (metric === 'conversionRate') return (
+      <div key={i} style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '14px 16px', marginBottom: 8 } as any}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 } as any}>
+          <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900] } as any}>{row.date}</span>
+          <span style={{
+            fontFamily: F, fontSize: 14, fontWeight: 700,
+            color: parseInt(row.rate) >= 50 ? colors.success[500] : colors.gray[700],
+          } as any}>{row.rate}</span>
+        </div>
+        <div style={{ display: 'flex', gap: 16 } as any}>
+          <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[500] } as any}>{row.proposals} proposals</span>
+          <span style={{ fontFamily: F, fontSize: 13, color: colors.success[500] } as any}>{row.closed} closed</span>
+        </div>
+        <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[400], display: 'block', marginTop: 6 } as any}>Source: {row.source}</span>
+      </div>
+    );
+    if (metric === 'proposalsSent') return (
+      <div key={i} style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '14px 16px', marginBottom: 8 } as any}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 } as any}>
+          <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900] } as any}>{row.client}</span>
+          <ProposalStatusBadge status={row.status} />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' } as any}>
+          <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[500] } as any}>{row.route}</span>
+          <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900] } as any}>{row.amount}</span>
+        </div>
+        <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[400], display: 'block', marginTop: 6 } as any}>{row.date} · {row.rooms} rooms</span>
+      </div>
+    );
+    if (metric === 'avgDealSize') return (
+      <div key={i} style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '14px 16px', marginBottom: 8 } as any}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 } as any}>
+          <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900] } as any}>{row.date}</span>
+          <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900] } as any}>{row.avg}</span>
+        </div>
+        <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[500], display: 'block' } as any}>{row.deals} deals · {row.totalRevenue} total revenue · {row.trend}</span>
+      </div>
+    );
+    /* salesRevenue */
+    return (
+      <div key={i} style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '14px 16px', marginBottom: 8 } as any}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 } as any}>
+          <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900] } as any}>{row.date}</span>
+          <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.primary[500] } as any}>{row.revenue}</span>
+        </div>
+        <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[500], display: 'block' } as any}>{row.deals} deals · Avg {row.avg} · {row.vs}</span>
+      </div>
+    );
+  };
+
+  return (
+    <AnimatedPage direction="right" duration={0.3}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: '#F5F5F7' } as any}>
+      {/* Nav bar — iOS HIG */}
+      <div style={{
+        display: 'flex', alignItems: 'center', padding: '14px 16px',
+        backgroundColor: '#F5F5F7', position: 'relative', minHeight: 44,
+      } as any}>
+        <div onClick={onBack} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', zIndex: 1 } as any}>
+          <BackIcon />
+        </div>
+        <span style={{
+          fontFamily: F, fontSize: 17, fontWeight: 600, color: colors.gray[900],
+          position: 'absolute', left: 0, right: 0, textAlign: 'center', pointerEvents: 'none',
+        } as any}>
+          {config.title}
+        </span>
+      </div>
+
+      {/* Filter Chips */}
+      <div style={{
+        display: 'flex', alignItems: 'center', padding: '4px 16px 12px', gap: 8,
+        overflowX: 'auto', scrollbarWidth: 'none',
+      } as any}>
+        {(['7d', '30d', '90d'] as const).map(p => (
+          <div
+            className="sales-chip"
+            key={p}
+            onClick={() => setFilterPeriod(p)}
+            style={{
+              height: 36, borderRadius: 12, cursor: 'pointer',
+              backgroundColor: filterPeriod === p ? colors.primary[500] : '#FFFFFF',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              padding: '0 16px', whiteSpace: 'nowrap', flexShrink: 0,
+            } as any}
+          >
+            <span style={{
+              fontFamily: F, fontSize: 13, fontWeight: 600,
+              color: filterPeriod === p ? '#FFFFFF' : colors.gray[600],
+            } as any}>
+              {p === '7d' ? '7 Days' : p === '30d' ? '30 Days' : '90 Days'}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* Scrollable Content */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0 16px 0' } as any}>
+        {/* Summary Card */}
+        <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '20px', marginBottom: 16 } as any}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 } as any}>
+            <div style={{
+              width: 48, height: 48, borderRadius: 16,
+              backgroundColor: `${config.color}12`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            } as any}>
+              {config.icon}
+            </div>
+            <div style={{ flex: 1 } as any}>
+              <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[400], display: 'block' } as any}>
+                {periodLabel}
+              </span>
+              <span style={{ fontFamily: F, fontSize: 28, fontWeight: 800, color: colors.gray[900], display: 'block', letterSpacing: -0.5, marginTop: 2 } as any}>
+                {summaryValue}
+              </span>
+            </div>
+            <span style={{
+              fontFamily: F, fontSize: 12, fontWeight: 600, color: colors.success[500],
+              backgroundColor: colors.success[50], padding: '6px 12px', borderRadius: 12,
+            } as any}>
+              ↑ Trending
+            </span>
+          </div>
+        </div>
+
+        {/* Row List */}
+        {data.rows.map((row, i) => (
+          <StaggerItem key={i} index={i}>{renderRow(row, i)}</StaggerItem>
+        ))}
+
+        <div style={{ height: 48 } as any} />
+      </div>
+    </div>
+    </AnimatedPage>
+  );
+};
+
+/* ═══════════════════════════════════════════
    Status Badge Helper
    ═══════════════════════════════════════════ */
 
@@ -469,6 +734,7 @@ export const SalesDashboardScreen: React.FC<SalesDashboardScreenProps> = ({
   const [period, setPeriod] = useState<'week' | 'month'>('week');
   const [notifVisible, setNotifVisible] = useState(false);
   const [selectedChartBar, setSelectedChartBar] = useState<number | null>(null);
+  const [drillDown, setDrillDown] = useState<SalesMetricKey | null>(null);
 
   useEffect(() => { injectAnimationCSS(); }, []);
 
@@ -478,11 +744,12 @@ export const SalesDashboardScreen: React.FC<SalesDashboardScreenProps> = ({
   const maxRev = Math.max(...d.chart.map(c => c.value));
   const totalChart = d.chart.reduce((s, c) => s + c.value, 0);
 
-  const MetricCard = ({ label, value, sub, color, icon }: {
-    label: string; value: string; sub?: string; color: string; icon: React.ReactNode;
+  const MetricCard = ({ label, value, sub, color, icon, metric }: {
+    label: string; value: string; sub?: string; color: string; icon: React.ReactNode; metric: SalesMetricKey;
   }) => (
     <div
       className="sales-card-interactive"
+      onClick={() => setDrillDown(metric)}
       style={{
         flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16,
         padding: '16px 14px', minWidth: 0, cursor: 'pointer',
@@ -511,10 +778,13 @@ export const SalesDashboardScreen: React.FC<SalesDashboardScreenProps> = ({
   );
 
   return (
-    <SafeAreaView style={s.safeArea}>
-      <View style={s.container}>
+    <SafeAreaView style={[s.safeArea, drillDown && { backgroundColor: '#F5F5F7' }]}>
+      <View style={[s.container, drillDown && { backgroundColor: '#F5F5F7' }]}>
         <StatusBarMock onTimeTap={onBack} />
 
+        {drillDown ? (
+          <SalesDetailScreen metric={drillDown} onBack={() => setDrillDown(null)} />
+        ) : (
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           <div style={{ padding: '12px 16px 120px' } as any}>
 
@@ -547,6 +817,7 @@ export const SalesDashboardScreen: React.FC<SalesDashboardScreenProps> = ({
             {/* ── Total Sales Revenue Hero Card ── */}
             <div
               className="sales-card-interactive"
+              onClick={() => setDrillDown('salesRevenue')}
               style={{
                 backgroundColor: '#FFFFFF', borderRadius: 16,
                 padding: '20px', marginBottom: 12, cursor: 'pointer',
@@ -592,6 +863,7 @@ export const SalesDashboardScreen: React.FC<SalesDashboardScreenProps> = ({
                 sub={d.dealsClosedTrend}
                 color={colors.primary[500]}
                 icon={<ClipboardIcon color={colors.primary[500]} />}
+                metric="dealsClosed"
               />
               <MetricCard
                 label="Conversion Rate"
@@ -599,6 +871,7 @@ export const SalesDashboardScreen: React.FC<SalesDashboardScreenProps> = ({
                 sub={d.conversionSub}
                 color={colors.success[500]}
                 icon={<SyncIcon color={colors.success[500]} />}
+                metric="conversionRate"
               />
             </div>
             <div style={{ display: 'flex', flexDirection: 'row', gap: 10, marginBottom: 12, animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.14s both' } as any}>
@@ -608,6 +881,7 @@ export const SalesDashboardScreen: React.FC<SalesDashboardScreenProps> = ({
                 sub={d.proposalsTrend}
                 color={colors.warning[500]}
                 icon={<StarIcon color={colors.warning[500]} />}
+                metric="proposalsSent"
               />
               <MetricCard
                 label="Avg Deal Size"
@@ -615,12 +889,14 @@ export const SalesDashboardScreen: React.FC<SalesDashboardScreenProps> = ({
                 sub={d.avgDealSub}
                 color={ACCENT_PURPLE}
                 icon={<MoneyBagIcon color={ACCENT_PURPLE} />}
+                metric="avgDealSize"
               />
             </div>
 
             {/* ── Sales Chart ── */}
             <div
               className="sales-card-interactive"
+              onClick={() => setDrillDown('salesRevenue')}
               style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '20px 16px', marginBottom: 12, cursor: 'pointer', animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.2s both' } as any}
             >
               <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 } as any}>
@@ -726,6 +1002,7 @@ export const SalesDashboardScreen: React.FC<SalesDashboardScreenProps> = ({
 
           </div>
         </ScrollView>
+        )}
 
         <TabBar active="dashboard" onTabPress={onTabPress} role="sales" />
 
