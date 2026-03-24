@@ -1321,6 +1321,189 @@ const jobToMoveDetail = (job: JobData, moverName: string): MoveDetailData => {
 };
 
 /* ═══════════════════════════════════════════
+   Notifications Panel (bottom sheet — matches mover style 1:1)
+   ═══════════════════════════════════════════ */
+
+const CEO_SHEET_ANIM_ID = 'ceo-notif-anim';
+
+interface CeoNotif {
+  id: string; title: string; body: string;
+  time: string; read: boolean;
+  icon: 'move' | 'warning' | 'completed' | 'payment' | 'star';
+  group: 'today' | 'earlier';
+}
+
+const CEO_NOTIFS: CeoNotif[] = [
+  { id: 'cn1', title: 'Move in progress', body: 'Mike R. move — DTLA → Santa Monica, mover Alex M.', time: '5m ago', read: false, icon: 'move', group: 'today' },
+  { id: 'cn2', title: 'Mover running late', body: 'Ryan P. running 20 min behind schedule', time: '25m ago', read: false, icon: 'warning', group: 'today' },
+  { id: 'cn3', title: '3 moves completed today', body: 'All deliveries confirmed with no issues', time: '2h ago', read: true, icon: 'completed', group: 'today' },
+  { id: 'cn4', title: 'Payment received', body: '$2,340 deposited — Johnson move settlement', time: '4h ago', read: true, icon: 'payment', group: 'earlier' },
+  { id: 'cn5', title: 'New 5-star review', body: '"Excellent service, very professional team"', time: 'Yesterday', read: true, icon: 'star', group: 'earlier' },
+];
+
+const CeoNotifIcon: React.FC<{ type: CeoNotif['icon'] }> = ({ type }) => {
+  const c = colors.primary[500];
+  switch (type) {
+    case 'move':
+      return <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="7" width="13" height="9" rx="1.5" stroke={c} strokeWidth="2"/><path d="M15 10H18L21 13V16H15V10Z" stroke={c} strokeWidth="2" strokeLinejoin="round"/><circle cx="7" cy="18" r="2" stroke={c} strokeWidth="2"/><circle cx="18" cy="18" r="2" stroke={c} strokeWidth="2"/></svg>;
+    case 'warning':
+      return <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke={colors.warning[500]} strokeWidth="2"/><path d="M12 6V12L16 14" stroke={colors.warning[500]} strokeWidth="2" strokeLinecap="round"/></svg>;
+    case 'completed':
+      return <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke={colors.success[500]} strokeWidth="2"/><path d="M8 12L11 15L16 9" stroke={colors.success[500]} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+    case 'payment':
+      return <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke={c} strokeWidth="1.8"/><path d="M12 6V18M15 9.5C15 8.12 13.66 7 12 7S9 8.12 9 9.5 10.34 12 12 12 15 13.12 15 14.5 13.66 17 12 17 9 15.88 9 14.5" stroke={c} strokeWidth="1.8" strokeLinecap="round"/></svg>;
+    case 'star':
+      return <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#F59E0B"/></svg>;
+  }
+};
+
+const CeoNotificationsPanel: React.FC<{
+  visible: boolean; onClose: () => void;
+}> = ({ visible, onClose }) => {
+  const [mounted, setMounted] = React.useState(false);
+  const [closing, setClosing] = React.useState(false);
+  const sheetRef = React.useRef<HTMLDivElement | null>(null);
+  const dragRef = React.useRef<{ startY: number } | null>(null);
+
+  React.useEffect(() => {
+    if (Platform.OS === 'web' && !document.getElementById(CEO_SHEET_ANIM_ID)) {
+      const st = document.createElement('style');
+      st.id = CEO_SHEET_ANIM_ID;
+      st.textContent = `
+        @keyframes cSheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        @keyframes cSheetDown { from { transform: translateY(0); } to { transform: translateY(100%); } }
+        @keyframes cFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes cFadeOut { from { opacity: 1; } to { opacity: 0; } }
+      `;
+      document.head.appendChild(st);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (visible) { setMounted(true); setClosing(false); }
+  }, [visible]);
+
+  const handleClose = React.useCallback(() => {
+    setClosing(true);
+    setTimeout(() => { setMounted(false); setClosing(false); onClose(); }, 280);
+  }, [onClose]);
+
+  const onDown = (e: any) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    dragRef.current = { startY: e.clientY };
+    if (sheetRef.current) sheetRef.current.style.transition = 'none';
+  };
+  const onMove = (e: any) => {
+    if (!dragRef.current) return;
+    const dy = Math.max(0, e.clientY - dragRef.current.startY);
+    if (sheetRef.current) sheetRef.current.style.transform = `translateY(${dy}px)`;
+  };
+  const onUp = (e: any) => {
+    if (!dragRef.current) return;
+    const dy = e.clientY - dragRef.current.startY;
+    dragRef.current = null;
+    if (dy > 80) { handleClose(); }
+    else if (sheetRef.current) {
+      sheetRef.current.style.transition = 'transform 0.28s cubic-bezier(0.16,1,0.3,1)';
+      sheetRef.current.style.transform = 'translateY(0)';
+    }
+  };
+
+  if ((!visible && !mounted) || Platform.OS !== 'web') return null;
+
+  const today = CEO_NOTIFS.filter(n => n.group === 'today');
+  const earlier = CEO_NOTIFS.filter(n => n.group === 'earlier');
+
+  const renderGroup = (items: CeoNotif[], label: string) => (
+    <div style={{ paddingTop: 16 } as any}>
+      <span style={{
+        fontFamily: F, fontSize: 13, fontWeight: 600, color: colors.gray[400],
+        textTransform: 'uppercase' as const, letterSpacing: 0.8,
+        paddingLeft: 20, paddingBottom: 10, display: 'block',
+      } as any}>{label}</span>
+      <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 8, paddingLeft: 16, paddingRight: 16 } as any}>
+        {items.map(n => (
+          <div key={n.id} style={{
+            display: 'flex', flexDirection: 'row' as const, alignItems: 'flex-start',
+            padding: 14, borderRadius: 16,
+            backgroundColor: !n.read ? colors.primary[50] : colors.gray[50],
+          } as any}>
+            <div style={{
+              width: 44, height: 44, borderRadius: 22,
+              backgroundColor: !n.read ? colors.primary[100] : colors.gray[100],
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0, marginRight: 12,
+            } as any}>
+              <CeoNotifIcon type={n.icon} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 } as any}>
+              <div style={{ display: 'flex', flexDirection: 'row' as const, alignItems: 'center' } as any}>
+                {!n.read && <div style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: colors.primary[500], marginRight: 8, flexShrink: 0 } as any} />}
+                <span style={{ fontFamily: F, fontSize: 15, fontWeight: n.read ? 400 : 600, color: colors.gray[900] } as any}>{n.title}</span>
+              </div>
+              <span style={{ fontFamily: F, fontSize: 14, fontWeight: 400, color: colors.gray[500], marginTop: 3, display: 'block', lineHeight: '20px' } as any}>{n.body}</span>
+            </div>
+            <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[400], marginLeft: 10, whiteSpace: 'nowrap' as const, flexShrink: 0, marginTop: 2 } as any}>{n.time}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <View style={{ position: 'absolute' as any, top: 0, left: 0, right: 0, bottom: 0, zIndex: 300 } as any}>
+      <Pressable onPress={handleClose} style={{ position: 'absolute' as any, top: 0, left: 0, right: 0, bottom: 0 } as any}>
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.35)',
+          animation: closing ? 'cFadeOut 0.28s ease forwards' : 'cFadeIn 0.28s ease forwards',
+        } as any} />
+      </Pressable>
+      <div
+        ref={sheetRef as any}
+        style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0,
+          maxHeight: '65%', backgroundColor: '#FFFFFF',
+          borderTopLeftRadius: 24, borderTopRightRadius: 24,
+          display: 'flex', flexDirection: 'column' as const,
+          animation: closing ? 'cSheetDown 0.28s ease forwards' : 'cSheetUp 0.32s cubic-bezier(0.16,1,0.3,1) forwards',
+        } as any}
+      >
+        {/* Drag handle */}
+        <div
+          onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp}
+          style={{ display: 'flex', justifyContent: 'center', paddingTop: 12, paddingBottom: 8, cursor: 'grab', touchAction: 'none' } as any}
+        >
+          <div style={{ width: 36, height: 4, borderRadius: 2, backgroundColor: colors.gray[200] } as any} />
+        </div>
+
+        {/* Header */}
+        <div style={{
+          display: 'flex', flexDirection: 'row' as const, alignItems: 'center', justifyContent: 'space-between',
+          paddingLeft: 20, paddingRight: 20, paddingBottom: 12,
+        } as any}>
+          <span style={{ fontFamily: F, fontSize: 20, fontWeight: 700, color: colors.gray[900] } as any}>
+            Notifications
+          </span>
+          <Pressable onPress={handleClose} hitSlop={8}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M18 6L6 18M6 6L18 18" stroke={colors.gray[400]} strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          </Pressable>
+        </div>
+
+        {/* Content */}
+        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+          {today.length > 0 && renderGroup(today, 'Today')}
+          {earlier.length > 0 && renderGroup(earlier, 'Earlier')}
+          <View style={{ height: 24 }} />
+        </ScrollView>
+      </div>
+    </View>
+  );
+};
+
+/* ═══════════════════════════════════════════
    Main Component
    ═══════════════════════════════════════════ */
 
@@ -1334,6 +1517,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
   const [showAllMovers, setShowAllMovers] = useState(false);
   const [selectedJob, setSelectedJob] = useState<{ job: JobData; moverName: string } | null>(null);
   const [selectedChartBar, setSelectedChartBar] = useState<number | null>(null);
+  const [notifVisible, setNotifVisible] = useState(false);
 
   /* Inject animation CSS on mount */
   useEffect(() => { injectAnimationCSS(); }, []);
@@ -1415,92 +1599,134 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
             <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
               <div style={{ padding: '12px 16px 120px' } as any}>
 
-                {/* ── Header ── */}
-                <div style={{ marginBottom: 20, animation: 'fadeIn 0.4s ease both' } as any}>
-                  <span style={{ fontFamily: F, fontSize: 14, fontWeight: 500, color: colors.gray[400], display: 'block' } as any}>
-                    Good morning
-                  </span>
-                  <span style={{ fontFamily: F, fontSize: 26, fontWeight: 800, color: colors.gray[900], display: 'block', marginTop: 2, letterSpacing: -0.5 } as any}>
-                    Company Overview
-                  </span>
-                </div>
-
-                {/* ── Alerts / Notifications ── */}
-                <div style={{ marginBottom: 12, animation: 'fadeInUp 0.35s cubic-bezier(0.22,1,0.36,1) 0.02s both' } as any}>
-                  {[
-                    { icon: '⚡', text: 'Mike R. move in progress — DTLA → Santa Monica', color: colors.primary[500], bg: colors.primary[50] },
-                    { icon: '⏰', text: 'Ryan P. running 20 min behind schedule', color: colors.warning[600], bg: colors.warning[50] },
-                    { icon: '✓', text: '3 moves completed today', color: colors.success[500], bg: colors.success[50] },
-                  ].map((alert, i) => (
-                    <div key={i} style={{
-                      display: 'flex', alignItems: 'center', gap: 12,
-                      padding: '12px 14px', marginBottom: 6,
-                      backgroundColor: '#FFFFFF', borderRadius: 14,
-                    } as any}>
-                      <div style={{
-                        width: 36, height: 36, borderRadius: 10,
-                        backgroundColor: alert.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                        fontSize: 16,
-                      } as any}>
-                        {alert.icon}
-                      </div>
-                      <span style={{ fontFamily: F, fontSize: 13, fontWeight: 500, color: colors.gray[700], flex: 1, lineHeight: '18px' } as any}>
-                        {alert.text}
-                      </span>
-                      <ChevronRightIcon color={colors.gray[200]} />
-                    </div>
-                  ))}
-                </div>
-
-                {/* ── Active Moves (live) ── */}
-                <div style={{
-                  backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px', marginBottom: 12,
-                  animation: 'fadeInUp 0.35s cubic-bezier(0.22,1,0.36,1) 0.04s both',
-                } as any}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 } as any}>
-                    <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900] } as any}>
-                      Active Now
+                {/* ── Header (with bell — matches mover style) ── */}
+                <div style={{ display: 'flex', flexDirection: 'row' as const, justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, animation: 'fadeIn 0.4s ease both' } as any}>
+                  <div>
+                    <span style={{ fontFamily: F, fontSize: 14, fontWeight: 500, color: colors.gray[400], display: 'block' } as any}>
+                      Good morning
                     </span>
-                    <div style={{
-                      display: 'flex', alignItems: 'center', gap: 6,
-                      backgroundColor: colors.success[50], borderRadius: 8, padding: '4px 10px',
-                    } as any}>
-                      <div style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: colors.success[500] } as any} />
-                      <span style={{ fontFamily: F, fontSize: 12, fontWeight: 600, color: colors.success[600] } as any}>
-                        2 moves
-                      </span>
-                    </div>
+                    <span style={{ fontFamily: F, fontSize: 26, fontWeight: 800, color: colors.gray[900], display: 'block', marginTop: 2, letterSpacing: -0.5 } as any}>
+                      Company Overview
+                    </span>
                   </div>
-                  {[
-                    { client: 'Mike R.', mover: 'Alex M.', route: 'DTLA → Santa Monica', step: 'Loading', progress: 4, of: 8 },
-                    { client: 'Kevin T.', mover: 'Marcus T.', route: 'Koreatown → Los Feliz', step: 'En Route to Pickup', progress: 2, of: 8 },
-                  ].map((m, i) => (
-                    <div key={i} style={{
-                      padding: '12px 0', borderTop: i > 0 ? `1px solid #EFF2F7` : 'none',
+                  <div
+                    onClick={() => setNotifVisible(true)}
+                    style={{
+                      width: 44, height: 44, borderRadius: 22,
+                      backgroundColor: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      cursor: 'pointer', position: 'relative',
+                    } as any}
+                  >
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                      <path d="M18 8A6 6 0 1 0 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8Z" fill={colors.gray[700]} stroke={colors.gray[700]} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M13.73 21A2 2 0 0 1 10.27 21" stroke={colors.gray[700]} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    {/* Unread dot */}
+                    <div style={{ position: 'absolute', top: 10, right: 12, width: 8, height: 8, borderRadius: 4, backgroundColor: colors.primary[500], border: '2px solid #FFFFFF' } as any} />
+                  </div>
+                </div>
+
+                {/* ── Active Moves (mover-style active move card — 1:1) ── */}
+                {[
+                  { id: 'am1', client: 'Mike Robinson', from: '742 S Hill St, Los Angeles, CA', to: '1847 Ocean Ave, Santa Monica, CA', date: 'Mar 24', time: '9:00 AM', rooms: 3, price: 1280, step: 'loading' as const, stepIdx: 3, mover: 'Alex M.' },
+                  { id: 'am2', client: 'Kevin Thompson', from: '456 N Vermont Ave, Los Angeles', to: '2100 Los Feliz Blvd, Los Angeles', date: 'Mar 24', time: '10:30 AM', rooms: 2, price: 890, step: 'en_route_pickup' as const, stepIdx: 1, mover: 'Marcus T.' },
+                ].map((move) => {
+                  const STEPS = ['accepted', 'en_route_pickup', 'arrived_pickup', 'loading', 'en_route_delivery', 'arrived_delivery', 'unloading', 'completed'];
+                  const STEP_LABELS_MAP: Record<string, string> = {
+                    accepted: 'Order accepted', en_route_pickup: 'En route to pickup', arrived_pickup: 'Arrived at pickup',
+                    loading: 'Loading', en_route_delivery: 'En route to delivery', arrived_delivery: 'Arrived at delivery',
+                    unloading: 'Unloading', completed: 'Completed',
+                  };
+                  return (
+                    <div key={move.id} style={{
+                      backgroundColor: '#FFFFFF', borderRadius: 20, padding: 20, marginBottom: 12,
+                      animation: 'fadeInUp 0.35s cubic-bezier(0.22,1,0.36,1) 0.02s both',
                     } as any}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 } as any}>
-                        <span style={{ fontFamily: F, fontSize: 14, fontWeight: 600, color: colors.gray[900] } as any}>{m.client}</span>
-                        <span style={{
-                          fontFamily: F, fontSize: 12, fontWeight: 600, color: '#B54708',
-                          backgroundColor: '#FFFAEB', padding: '3px 8px', borderRadius: 6,
+                      {/* Live badge + price */}
+                      <div style={{ display: 'flex', flexDirection: 'row' as const, justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 } as any}>
+                        <div style={{
+                          display: 'flex', flexDirection: 'row' as const, alignItems: 'center',
+                          backgroundColor: '#10B981', paddingLeft: 10, paddingRight: 10, paddingTop: 4, paddingBottom: 4,
+                          borderRadius: 12, gap: 5,
                         } as any}>
-                          {m.step}
-                        </span>
-                      </div>
-                      <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[500], display: 'block', marginBottom: 2 } as any}>
-                        {m.route} · Mover: {m.mover}
-                      </span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 } as any}>
-                        <div style={{ flex: 1, height: 4, backgroundColor: '#EFF2F7', borderRadius: 2, overflow: 'hidden' } as any}>
-                          <div style={{ height: '100%', width: `${(m.progress / m.of) * 100}%`, backgroundColor: colors.primary[500], borderRadius: 2 } as any} />
+                          <div style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#FFFFFF' } as any} />
+                          <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: '#FFFFFF', letterSpacing: 0.5, textTransform: 'uppercase' } as any}>Live</span>
                         </div>
-                        <span style={{ fontFamily: F, fontSize: 11, color: colors.gray[400], flexShrink: 0 } as any}>
-                          {m.progress}/{m.of}
-                        </span>
+                        <span style={{ fontFamily: F, fontSize: 18, fontWeight: 600, color: colors.primary[500], letterSpacing: -0.36 } as any}>${move.price}</span>
+                      </div>
+
+                      {/* Client info */}
+                      <div style={{ display: 'flex', flexDirection: 'row' as const, alignItems: 'center', gap: 12, marginBottom: 16 } as any}>
+                        <div style={{
+                          width: 44, height: 44, borderRadius: 22,
+                          backgroundColor: colors.primary[50], display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        } as any}>
+                          <span style={{ fontFamily: F, fontSize: 14, fontWeight: 700, color: colors.primary[500], letterSpacing: -0.28 } as any}>
+                            {move.client.split(' ').map(n => n[0]).join('')}
+                          </span>
+                        </div>
+                        <div style={{ flex: 1 } as any}>
+                          <span style={{ fontFamily: F, fontSize: 15, fontWeight: 500, color: '#212225', display: 'block' } as any}>{move.client}</span>
+                          <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.gray[500], marginTop: 2, display: 'block', letterSpacing: -0.24 } as any}>
+                            {move.date} · {move.time} · {move.rooms} rooms · Mover: {move.mover}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Route (from → to with dots + line) */}
+                      <div style={{ display: 'flex', flexDirection: 'row' as const, alignItems: 'stretch', paddingTop: 12, paddingBottom: 12, marginBottom: 16 } as any}>
+                        <div style={{ width: 12, display: 'flex', flexDirection: 'column' as const, alignItems: 'center', paddingTop: 4, paddingBottom: 4, marginRight: 10 } as any}>
+                          <div style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.primary[500] } as any} />
+                          <div style={{ flex: 1, width: 2, backgroundColor: '#E4E7EC', marginTop: 2, marginBottom: 2 } as any} />
+                          <div style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#10B981' } as any} />
+                        </div>
+                        <div style={{ flex: 1 } as any}>
+                          <span style={{ fontFamily: F, fontSize: 16, fontWeight: 400, color: colors.gray[700], lineHeight: '22px', letterSpacing: -0.32, display: 'block' } as any}>{move.from}</span>
+                          <div style={{ height: 10 } as any} />
+                          <span style={{ fontFamily: F, fontSize: 16, fontWeight: 400, color: colors.gray[700], lineHeight: '22px', letterSpacing: -0.32, display: 'block' } as any}>{move.to}</span>
+                        </div>
+                      </div>
+
+                      {/* Step progress */}
+                      <div style={{ marginBottom: 4 } as any}>
+                        <div style={{ display: 'flex', flexDirection: 'row' as const, justifyContent: 'space-between', alignItems: 'center' } as any}>
+                          <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.gray[500], textTransform: 'uppercase', letterSpacing: 0.5 } as any}>
+                            Step {move.stepIdx + 1} of {STEPS.length}: {STEP_LABELS_MAP[move.step]}
+                          </span>
+                          <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.primary[500], letterSpacing: -0.24, cursor: 'pointer' } as any}>
+                            View details
+                          </span>
+                        </div>
+                        <div style={{ height: 12 } as any} />
+                        <div style={{ display: 'flex', flexDirection: 'row' as const, alignItems: 'center' } as any}>
+                          {STEPS.map((s, i) => {
+                            const done = i < move.stepIdx;
+                            const current = i === move.stepIdx;
+                            return (
+                              <React.Fragment key={s}>
+                                <div style={{
+                                  width: 18, height: 18, borderRadius: 9,
+                                  backgroundColor: done ? '#10B981' : current ? colors.primary[500] : '#E4E7EC',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                  ...(current ? { boxShadow: `0 0 0 3px ${colors.primary[100]}` } : {}),
+                                } as any}>
+                                  {done && (
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="#FFFFFF">
+                                      <path d="M5 12L10 17L19 7" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </svg>
+                                  )}
+                                </div>
+                                {i < STEPS.length - 1 && (
+                                  <div style={{ flex: 1, height: 2, backgroundColor: done ? '#10B981' : '#E4E7EC', marginLeft: 2, marginRight: 2 } as any} />
+                                )}
+                              </React.Fragment>
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  );
+                })}
 
                 {/* ── Revenue Hero Card (white, no gradient) ── */}
                 <div
@@ -1732,6 +1958,9 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
             <TabBar active="dashboard" onTabPress={onTabPress} role="ceo" />
           </>
         )}
+
+        {/* Notifications bottom sheet */}
+        <CeoNotificationsPanel visible={notifVisible} onClose={() => setNotifVisible(false)} />
       </View>
     </SafeAreaView>
   );
