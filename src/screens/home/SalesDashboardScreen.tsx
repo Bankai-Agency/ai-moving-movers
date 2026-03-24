@@ -862,18 +862,23 @@ export const SalesDashboardScreen: React.FC<SalesDashboardScreenProps> = ({
     </div>
   );
 
+  /* When a deal is selected, render MoveDetailScreen directly (it has its own SafeAreaView + StatusBarMock) */
+  if (selectedDeal) {
+    return (
+      <MoveDetailScreenBase
+        move={dealToMoveDetail(selectedDeal)}
+        role="sales"
+        onBack={() => setSelectedDeal(null)}
+      />
+    );
+  }
+
   return (
-    <SafeAreaView style={[s.safeArea, (drillDown || selectedDeal) && { backgroundColor: '#F5F5F7' }]}>
-      <View style={[s.container, (drillDown || selectedDeal) && { backgroundColor: '#F5F5F7' }]}>
+    <SafeAreaView style={[s.safeArea, drillDown && { backgroundColor: '#F5F5F7' }]}>
+      <View style={[s.container, drillDown && { backgroundColor: '#F5F5F7' }]}>
         <StatusBarMock onTimeTap={onBack} />
 
-        {selectedDeal ? (
-          <MoveDetailScreenBase
-            move={dealToMoveDetail(selectedDeal)}
-            role="sales"
-            onBack={() => setSelectedDeal(null)}
-          />
-        ) : drillDown ? (
+        {drillDown ? (
           <SalesDetailScreen metric={drillDown} onBack={() => setDrillDown(null)} onDealPress={(deal) => setSelectedDeal(deal)} />
         ) : (
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>

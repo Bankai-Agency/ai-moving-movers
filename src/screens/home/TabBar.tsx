@@ -403,7 +403,6 @@ export const TabBar: React.FC<TabBarProps> = ({ active, onTabPress, variant = 'd
           border: '1px solid rgba(255,255,255,0.5)',
         } : {
           backgroundColor: '#FFFFFF',
-          border: '1px solid #F2F4F7',
         }),
         borderRadius: 28,
         paddingTop: 2,
