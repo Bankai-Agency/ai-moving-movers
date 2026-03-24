@@ -345,12 +345,8 @@ export const PaymentMethodsScreen: React.FC<PaymentMethodsScreenProps> = ({
                 <Pressable
                   key={card.id}
                   onPress={() => {
-                    if (role === 'ceo') {
-                      setDefaultMethod(card.id);
-                    } else {
-                      setSelectedCard(card);
-                      setView('cardDetail');
-                    }
+                    setSelectedCard(card);
+                    setView('cardDetail');
                   }}
                   style={{
                     flexDirection: 'row',
