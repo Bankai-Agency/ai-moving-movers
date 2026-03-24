@@ -148,11 +148,47 @@ const TOP_MOVERS = [
   { name: 'Carlos R.', moves: 19, rating: 4.9, revenue: 10800 },
 ];
 
-const TEAM_STATS = {
-  totalMovers: 12,
-  activeNow: 7,
-  onBreak: 2,
-  available: 3,
+/* Mock employee detail data */
+const MOVER_DETAILS: Record<string, {
+  onTime: string; cancellation: string; avgTime: string;
+  rating: string; totalRevenue: number; completedMoves: number;
+  recentJobs: { date: string; client: string; route: string; amount: string; rating: string }[];
+}> = {
+  'Dmitriy K.': {
+    onTime: '98%', cancellation: '0.8%', avgTime: '3.4h',
+    rating: '4.9', totalRevenue: 18200, completedMoves: 34,
+    recentJobs: [
+      { date: 'Mar 23', client: 'Sarah J.', route: 'Hollywood → Pasadena', amount: '$780', rating: '5.0' },
+      { date: 'Mar 22', client: 'Tom W.', route: 'Venice → Beverly Hills', amount: '$920', rating: '5.0' },
+      { date: 'Mar 21', client: 'David C.', route: 'Westwood → Culver City', amount: '$670', rating: '4.8' },
+      { date: 'Mar 20', client: 'Jason M.', route: 'Brentwood → Marina', amount: '$1,100', rating: '4.9' },
+    ],
+  },
+  'Alex M.': {
+    onTime: '95%', cancellation: '1.2%', avgTime: '3.8h',
+    rating: '4.8', totalRevenue: 15600, completedMoves: 28,
+    recentJobs: [
+      { date: 'Mar 23', client: 'Mike R.', route: 'DTLA → Santa Monica', amount: '$1,250', rating: '4.7' },
+      { date: 'Mar 22', client: 'Lisa K.', route: 'Burbank → Glendale', amount: '$540', rating: '4.8' },
+      { date: 'Mar 20', client: 'Jason M.', route: 'Brentwood → Marina', amount: '$1,100', rating: '4.9' },
+    ],
+  },
+  'James L.': {
+    onTime: '92%', cancellation: '2.5%', avgTime: '4.1h',
+    rating: '4.7', totalRevenue: 12400, completedMoves: 22,
+    recentJobs: [
+      { date: 'Mar 22', client: 'Tom W.', route: 'Venice → Beverly Hills', amount: '$920', rating: '4.6' },
+      { date: 'Mar 21', client: 'Anna P.', route: 'Silver Lake → Echo Park', amount: '$380', rating: '4.8' },
+    ],
+  },
+  'Carlos R.': {
+    onTime: '97%', cancellation: '0.5%', avgTime: '3.6h',
+    rating: '4.9', totalRevenue: 10800, completedMoves: 19,
+    recentJobs: [
+      { date: 'Mar 21', client: 'Anna P.', route: 'Silver Lake → Echo Park', amount: '$380', rating: '5.0' },
+      { date: 'Mar 19', client: 'Grace L.', route: 'WeHo → Culver City', amount: '$720', rating: '4.9' },
+    ],
+  },
 };
 
 /* ═══════════════════════════════════════════
@@ -232,12 +268,12 @@ const DRILL_DOWN_DATA: Record<MetricKey, { columns: string[]; rows: string[][] }
   rating: {
     columns: ['Date', 'Client', 'Mover', 'Rating', 'Comment'],
     rows: [
-      ['Mar 23', 'Sarah J.', 'Dmitriy K.', '⭐ 5.0', 'Amazing service!'],
-      ['Mar 22', 'Lisa K.', 'Alex M.', '⭐ 4.8', 'Very professional'],
-      ['Mar 22', 'Tom W.', 'James L.', '⭐ 5.0', 'Fast and careful'],
-      ['Mar 21', 'Anna P.', 'Carlos R.', '⭐ 4.5', 'Good job overall'],
-      ['Mar 21', 'David C.', 'Dmitriy K.', '⭐ 5.0', 'Highly recommend'],
-      ['Mar 20', 'Jason M.', 'Alex M.', '⭐ 4.9', 'Smooth move'],
+      ['Mar 23', 'Sarah J.', 'Dmitriy K.', '5.0', 'Amazing service!'],
+      ['Mar 22', 'Lisa K.', 'Alex M.', '4.8', 'Very professional'],
+      ['Mar 22', 'Tom W.', 'James L.', '5.0', 'Fast and careful'],
+      ['Mar 21', 'Anna P.', 'Carlos R.', '4.5', 'Good job overall'],
+      ['Mar 21', 'David C.', 'Dmitriy K.', '5.0', 'Highly recommend'],
+      ['Mar 20', 'Jason M.', 'Alex M.', '4.9', 'Smooth move'],
     ],
   },
   conversion: {
@@ -604,6 +640,114 @@ const DetailScreen: React.FC<{
 };
 
 /* ═══════════════════════════════════════════
+   Mover Detail Screen (employee stats)
+   ═══════════════════════════════════════════ */
+
+const MoverDetailScreen: React.FC<{
+  mover: typeof TOP_MOVERS[0];
+  rank: number;
+  onBack: () => void;
+}> = ({ mover, rank, onBack }) => {
+  const detail = MOVER_DETAILS[mover.name];
+  if (!detail) return null;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: '#F5F5F7' } as any}>
+      {/* Nav bar */}
+      <div style={{
+        display: 'flex', alignItems: 'center', padding: '14px 16px',
+        backgroundColor: '#F5F5F7', position: 'relative', minHeight: 44,
+      } as any}>
+        <div onClick={onBack} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', zIndex: 1 } as any}>
+          <BackIcon />
+        </div>
+        <span style={{
+          fontFamily: F, fontSize: 17, fontWeight: 600, color: colors.gray[900],
+          position: 'absolute', left: 0, right: 0, textAlign: 'center', pointerEvents: 'none',
+        } as any}>
+          {mover.name}
+        </span>
+      </div>
+
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0 16px 0' } as any}>
+        {/* Profile header */}
+        <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: 20, marginBottom: 12 } as any}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 } as any}>
+            <div style={{
+              width: 52, height: 52, borderRadius: 16, backgroundColor: colors.primary[50],
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            } as any}>
+              <span style={{ fontFamily: F, fontSize: 20, fontWeight: 700, color: colors.primary[500] } as any}>
+                {mover.name.split(' ').map(n => n[0]).join('')}
+              </span>
+            </div>
+            <div style={{ flex: 1 } as any}>
+              <span style={{ fontFamily: F, fontSize: 18, fontWeight: 700, color: colors.gray[900], display: 'block' } as any}>
+                {mover.name}
+              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 } as any}>
+                <StarIcon color={colors.warning[500]} size={14} />
+                <span style={{ fontFamily: F, fontSize: 14, fontWeight: 600, color: colors.warning[600] } as any}>{detail.rating}</span>
+                <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[400], marginLeft: 4 } as any}>· Rank #{rank}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats grid */}
+        <div style={{ display: 'flex', gap: 10, marginBottom: 12 } as any}>
+          {[
+            { label: 'Revenue', value: `$${detail.totalRevenue.toLocaleString()}`, color: colors.primary[500] },
+            { label: 'Moves', value: String(detail.completedMoves), color: colors.gray[900] },
+          ].map(s => (
+            <div key={s.label} style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px 14px' } as any}>
+              <span style={{ fontFamily: F, fontSize: 22, fontWeight: 800, color: s.color, display: 'block', letterSpacing: -0.5 } as any}>{s.value}</span>
+              <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.gray[400], display: 'block', marginTop: 4 } as any}>{s.label}</span>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: 10, marginBottom: 12 } as any}>
+          {[
+            { label: 'On-time', value: detail.onTime, color: colors.success[500] },
+            { label: 'Cancellation', value: detail.cancellation, color: colors.error[500] },
+            { label: 'Avg Time', value: detail.avgTime, color: colors.primary[500] },
+          ].map(s => (
+            <div key={s.label} style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px 14px' } as any}>
+              <span style={{ fontFamily: F, fontSize: 20, fontWeight: 800, color: s.color, display: 'block' } as any}>{s.value}</span>
+              <span style={{ fontFamily: F, fontSize: 11, fontWeight: 500, color: colors.gray[400], display: 'block', marginTop: 4 } as any}>{s.label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Recent jobs */}
+        <div style={{ marginBottom: 12 } as any}>
+          <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900], display: 'block', marginBottom: 10 } as any}>
+            Recent Jobs
+          </span>
+          {detail.recentJobs.map((job, i) => (
+            <div key={i} style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '14px 16px', marginBottom: 8 } as any}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 } as any}>
+                <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900] } as any}>{job.client}</span>
+                <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900] } as any}>{job.amount}</span>
+              </div>
+              <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[500], display: 'block', marginBottom: 4 } as any}>{job.route}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 } as any}>
+                <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[400] } as any}>{job.date}</span>
+                <StarIcon color={colors.warning[500]} size={11} />
+                <span style={{ fontFamily: F, fontSize: 12, fontWeight: 600, color: colors.warning[600] } as any}>{job.rating}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ height: 48 } as any} />
+      </div>
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════
    Main Component
    ═══════════════════════════════════════════ */
 
@@ -613,6 +757,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
 }) => {
   const [period, setPeriod] = useState<'week' | 'month'>('week');
   const [drillDown, setDrillDown] = useState<MetricKey | null>(null);
+  const [selectedMover, setSelectedMover] = useState<number | null>(null);
 
   if (Platform.OS !== 'web') return null;
 
@@ -658,11 +803,17 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
   );
 
   return (
-    <SafeAreaView style={[s.safeArea, drillDown && { backgroundColor: '#F5F5F7' }]}>
-      <View style={[s.container, drillDown && { backgroundColor: '#F5F5F7' }]}>
+    <SafeAreaView style={[s.safeArea, (drillDown || selectedMover !== null) && { backgroundColor: '#F5F5F7' }]}>
+      <View style={[s.container, (drillDown || selectedMover !== null) && { backgroundColor: '#F5F5F7' }]}>
         <StatusBarMock onTimeTap={onBack} />
 
-        {drillDown ? (
+        {selectedMover !== null ? (
+          <MoverDetailScreen
+            mover={TOP_MOVERS[selectedMover]}
+            rank={selectedMover + 1}
+            onBack={() => setSelectedMover(null)}
+          />
+        ) : drillDown ? (
           <DetailScreen metric={drillDown} onBack={() => setDrillDown(null)} />
         ) : (
           <>
@@ -792,49 +943,6 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                   </div>
                 </div>
 
-                {/* ── Team Status ── */}
-                <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '20px 16px', marginBottom: 12 } as any}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 } as any}>
-                    <div>
-                      <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900], display: 'block' } as any}>
-                        Team Status
-                      </span>
-                      <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[400], display: 'block', marginTop: 2 } as any}>
-                        {TEAM_STATS.totalMovers} movers · {Math.round((TEAM_STATS.activeNow / TEAM_STATS.totalMovers) * 100)}% active now
-                      </span>
-                    </div>
-                    <span style={{
-                      fontFamily: F, fontSize: 12, fontWeight: 600, color: colors.success[500],
-                      backgroundColor: colors.success[50], padding: '4px 10px', borderRadius: 12,
-                    } as any}>Live</span>
-                  </div>
-                  {/* Utilization bar */}
-                  <div style={{ display: 'flex', height: 8, borderRadius: 4, overflow: 'hidden', marginBottom: 14 } as any}>
-                    <div style={{ width: `${(TEAM_STATS.activeNow / TEAM_STATS.totalMovers) * 100}%`, backgroundColor: colors.success[500] } as any} />
-                    <div style={{ width: `${(TEAM_STATS.onBreak / TEAM_STATS.totalMovers) * 100}%`, backgroundColor: colors.warning[400] } as any} />
-                    <div style={{ width: `${(TEAM_STATS.available / TEAM_STATS.totalMovers) * 100}%`, backgroundColor: colors.primary[300] } as any} />
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'row', gap: 8 } as any}>
-                    {[
-                      { label: 'Active', value: TEAM_STATS.activeNow, color: colors.success[500], bg: colors.success[50] },
-                      { label: 'On Break', value: TEAM_STATS.onBreak, color: colors.warning[500], bg: colors.warning[50] },
-                      { label: 'Available', value: TEAM_STATS.available, color: colors.primary[500], bg: colors.primary[25] || '#EFF8FF' },
-                    ].map((st, i) => (
-                      <div key={i} style={{
-                        flex: 1, padding: '12px 10px', borderRadius: 12, textAlign: 'center',
-                        backgroundColor: st.bg,
-                      } as any}>
-                        <span style={{ fontFamily: F, fontSize: 22, fontWeight: 800, color: st.color, display: 'block' } as any}>
-                          {st.value}
-                        </span>
-                        <span style={{ fontFamily: F, fontSize: 11, fontWeight: 600, color: st.color, display: 'block', marginTop: 2, opacity: 0.8 } as any}>
-                          {st.label}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
                 {/* ── Top Movers Leaderboard ── */}
                 <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '20px 16px', marginBottom: 12 } as any}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 } as any}>
@@ -846,7 +954,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                     </span>
                   </div>
                   {TOP_MOVERS.map((mover, i) => (
-                    <div key={i} style={{
+                    <div key={i} onClick={() => setSelectedMover(i)} style={{
                       display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 12,
                       padding: '10px 0', cursor: 'pointer',
                     } as any}>
@@ -883,7 +991,7 @@ export const CeoDashboardScreen: React.FC<CeoDashboardScreenProps> = ({
                           {mover.name}
                         </span>
                         <span style={{ fontFamily: F, fontSize: 12, color: colors.gray[400], display: 'block', marginTop: 2 } as any}>
-                          {mover.moves} moves · ⭐ {mover.rating}
+                          {mover.moves} moves · <StarIcon color={colors.warning[500]} size={11} /> {mover.rating}
                         </span>
                       </div>
 
