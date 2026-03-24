@@ -948,76 +948,13 @@ const MoverDetailScreen: React.FC<{
    Job Detail Screen (move detail from employee)
    ═══════════════════════════════════════════ */
 
-/* Small inline icons for job detail */
-const MapPinIcon = ({ color, size = 16 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1 1 18 0z" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-    <circle cx="12" cy="10" r="3" stroke={color} strokeWidth="1.8"/>
-  </svg>
-);
-
-const ClockIcon = ({ color, size = 16 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <circle cx="12" cy="12" r="10" stroke={color} strokeWidth="1.8"/>
-    <path d="M12 6V12L16 14" stroke={color} strokeWidth="1.8" strokeLinecap="round"/>
-  </svg>
-);
-
-const BoxIcon = ({ color, size = 16 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M21 16V8a2 2 0 0 0-1-1.73L13 2.27a2 2 0 0 0-2 0L4 6.27A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M3.27 6.96L12 12.01L20.73 6.96M12 22.08V12" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-const UsersIcon = ({ color, size = 16 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-    <circle cx="9" cy="7" r="4" stroke={color} strokeWidth="1.8"/>
-    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-const PhoneIcon = ({ color, size = 16 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-const NoteIcon = ({ color, size = 16 }: { color: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
 const JobDetailScreen: React.FC<{
   job: JobData;
   moverName: string;
   onBack: () => void;
 }> = ({ job, moverName, onBack }) => {
-  const fromTo = job.route.split(' → ');
-  const from = fromTo[0] || '';
-  const to = fromTo[1] || '';
-
   const statusColor = job.status === 'Completed' ? colors.success[500] : colors.primary[500];
   const statusBg = job.status === 'Completed' ? colors.success[50] : colors.primary[50];
-
-  /* Detail row helper */
-  const InfoRow = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) => (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 0' } as any}>
-      <div style={{
-        width: 36, height: 36, borderRadius: 12, backgroundColor: '#EFF2F7',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-      } as any}>
-        {icon}
-      </div>
-      <div style={{ flex: 1, minWidth: 0 } as any}>
-        <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.gray[400], display: 'block' } as any}>{label}</span>
-        <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900], display: 'block', marginTop: 2 } as any}>{value}</span>
-      </div>
-    </div>
-  );
 
   return (
     <AnimatedPage direction="right" duration={0.3}>
@@ -1038,101 +975,115 @@ const JobDetailScreen: React.FC<{
         </span>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '0 16px' } as any}>
-        {/* Hero card — client + amount + status */}
-        <div style={{
-          backgroundColor: '#FFFFFF', borderRadius: 16, padding: 20, marginBottom: 12,
-          animation: 'scaleIn 0.35s cubic-bezier(0.22,1,0.36,1) both',
-        } as any}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 } as any}>
-            <div>
-              <span style={{ fontFamily: F, fontSize: 20, fontWeight: 800, color: colors.gray[900], display: 'block', letterSpacing: -0.3 } as any}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0 16px 0' } as any}>
+        {/* Header card — client + status badge */}
+        <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: 20, marginBottom: 12, animation: 'scaleIn 0.35s cubic-bezier(0.22,1,0.36,1) both' } as any}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 } as any}>
+            <div style={{
+              width: 52, height: 52, borderRadius: 16, backgroundColor: colors.primary[50],
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            } as any}>
+              <span style={{ fontFamily: F, fontSize: 20, fontWeight: 700, color: colors.primary[500] } as any}>
+                {job.client.split(' ').map(n => n[0]).join('')}
+              </span>
+            </div>
+            <div style={{ flex: 1 } as any}>
+              <span style={{ fontFamily: F, fontSize: 18, fontWeight: 700, color: colors.gray[900], display: 'block' } as any}>
                 {job.client}
               </span>
-              <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[400], display: 'block', marginTop: 4 } as any}>
-                {job.date}, 2026
-              </span>
-            </div>
-            <span style={{
-              fontFamily: F, fontSize: 12, fontWeight: 600, color: statusColor,
-              backgroundColor: statusBg, padding: '6px 14px', borderRadius: 12,
-            } as any}>
-              {job.status}
-            </span>
-          </div>
-          <span style={{ fontFamily: F, fontSize: 32, fontWeight: 800, color: colors.gray[900], display: 'block', letterSpacing: -1 } as any}>
-            {job.amount}
-          </span>
-        </div>
-
-        {/* Route card */}
-        <div style={{
-          backgroundColor: '#FFFFFF', borderRadius: 16, padding: 20, marginBottom: 12,
-          animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.06s both',
-        } as any}>
-          <span style={{ fontFamily: F, fontSize: 13, fontWeight: 600, color: colors.gray[400], display: 'block', marginBottom: 14 } as any}>
-            Route
-          </span>
-          <div style={{ display: 'flex', alignItems: 'stretch', gap: 12 } as any}>
-            {/* Timeline dots */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 20, paddingTop: 4 } as any}>
-              <div style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.primary[500], flexShrink: 0 } as any} />
-              <div style={{ width: 2, flex: 1, backgroundColor: colors.gray[200], margin: '4px 0' } as any} />
-              <div style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.success[500], flexShrink: 0 } as any} />
-            </div>
-            {/* From / To */}
-            <div style={{ flex: 1 } as any}>
-              <div style={{ marginBottom: 20 } as any}>
-                <span style={{ fontFamily: F, fontSize: 11, fontWeight: 500, color: colors.gray[400], display: 'block' } as any}>From</span>
-                <span style={{ fontFamily: F, fontSize: 16, fontWeight: 700, color: colors.gray[900], display: 'block', marginTop: 2 } as any}>{from}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 } as any}>
+                <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[400] } as any}>{job.date}</span>
+                <span style={{
+                  fontFamily: F, fontSize: 11, fontWeight: 600, color: statusColor,
+                  backgroundColor: statusBg, padding: '3px 10px', borderRadius: 12,
+                } as any}>
+                  {job.status}
+                </span>
               </div>
-              <div>
-                <span style={{ fontFamily: F, fontSize: 11, fontWeight: 500, color: colors.gray[400], display: 'block' } as any}>To</span>
-                <span style={{ fontFamily: F, fontSize: 16, fontWeight: 700, color: colors.gray[900], display: 'block', marginTop: 2 } as any}>{to}</span>
-              </div>
-            </div>
-            {/* Distance */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' } as any}>
-              <span style={{ fontFamily: F, fontSize: 22, fontWeight: 800, color: colors.primary[500] } as any}>{job.distance}</span>
             </div>
           </div>
         </div>
 
-        {/* Details card */}
-        <div style={{
-          backgroundColor: '#FFFFFF', borderRadius: 16, padding: '8px 20px', marginBottom: 12,
-          animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.12s both',
-        } as any}>
-          <InfoRow icon={<ClockIcon color={colors.gray[500]} />} label="Duration" value={job.duration} />
-          <div style={{ height: 1, backgroundColor: '#EFF2F7' } as any} />
-          <InfoRow icon={<BoxIcon color={colors.gray[500]} />} label="Items" value={`${job.rooms} rooms · ${job.items}`} />
-          <div style={{ height: 1, backgroundColor: '#EFF2F7' } as any} />
-          <InfoRow icon={<UsersIcon color={colors.gray[500]} />} label="Crew" value={`${job.crew} movers · ${moverName}`} />
-          <div style={{ height: 1, backgroundColor: '#EFF2F7' } as any} />
-          <InfoRow icon={<PhoneIcon color={colors.gray[500]} />} label="Client Phone" value={job.clientPhone} />
+        {/* Stats grid row 1 — Amount + Route */}
+        <div style={{ display: 'flex', gap: 10, marginBottom: 12, animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.08s both' } as any}>
+          <div style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px 14px' } as any}>
+            <span style={{ fontFamily: F, fontSize: 22, fontWeight: 800, color: colors.primary[500], display: 'block', letterSpacing: -0.5 } as any}>{job.amount}</span>
+            <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.gray[400], display: 'block', marginTop: 4 } as any}>Amount</span>
+          </div>
+          <div style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px 14px' } as any}>
+            <span style={{ fontFamily: F, fontSize: 15, fontWeight: 800, color: colors.gray[900], display: 'block', letterSpacing: -0.3 } as any}>{job.route}</span>
+            <span style={{ fontFamily: F, fontSize: 12, fontWeight: 500, color: colors.gray[400], display: 'block', marginTop: 4 } as any}>Route</span>
+          </div>
+        </div>
+
+        {/* Stats grid row 2 — Duration, Distance, Rooms */}
+        <div style={{ display: 'flex', gap: 10, marginBottom: 12, animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.14s both' } as any}>
+          {[
+            { label: 'Duration', value: job.duration, color: colors.primary[500] },
+            { label: 'Distance', value: job.distance, color: colors.gray[900] },
+            { label: 'Rooms', value: String(job.rooms), color: colors.gray[900] },
+          ].map(stat => (
+            <div key={stat.label} style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px 14px' } as any}>
+              <span style={{ fontFamily: F, fontSize: 20, fontWeight: 800, color: stat.color, display: 'block' } as any}>{stat.value}</span>
+              <span style={{ fontFamily: F, fontSize: 11, fontWeight: 500, color: colors.gray[400], display: 'block', marginTop: 4 } as any}>{stat.label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Stats grid row 3 — Crew, Rating */}
+        <div style={{ display: 'flex', gap: 10, marginBottom: 12, animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.2s both' } as any}>
+          <div style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px 14px' } as any}>
+            <span style={{ fontFamily: F, fontSize: 20, fontWeight: 800, color: colors.gray[900], display: 'block' } as any}>{job.crew} movers</span>
+            <span style={{ fontFamily: F, fontSize: 11, fontWeight: 500, color: colors.gray[400], display: 'block', marginTop: 4 } as any}>Crew</span>
+          </div>
+          <div style={{ flex: 1, backgroundColor: '#FFFFFF', borderRadius: 16, padding: '16px 14px' } as any}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 } as any}>
+              <StarIcon color={colors.warning[500]} size={16} />
+              <span style={{ fontFamily: F, fontSize: 20, fontWeight: 800, color: colors.warning[600], display: 'block' } as any}>{job.rating}</span>
+            </div>
+            <span style={{ fontFamily: F, fontSize: 11, fontWeight: 500, color: colors.gray[400], display: 'block', marginTop: 4 } as any}>Client Rating</span>
+          </div>
+        </div>
+
+        {/* Details section */}
+        <div style={{ marginBottom: 12, animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.26s both' } as any}>
+          <span style={{ fontFamily: F, fontSize: 15, fontWeight: 700, color: colors.gray[900], display: 'block', marginBottom: 10 } as any}>
+            Details
+          </span>
+
+          {/* Items card */}
+          <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '14px 16px', marginBottom: 8 } as any}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 } as any}>
+              <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900] } as any}>Items</span>
+            </div>
+            <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[500], display: 'block' } as any}>{job.items}</span>
+          </div>
+
+          {/* Mover card */}
+          <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '14px 16px', marginBottom: 8 } as any}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 } as any}>
+              <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900] } as any}>Assigned Mover</span>
+            </div>
+            <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[500], display: 'block' } as any}>{moverName}</span>
+          </div>
+
+          {/* Phone card */}
+          <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '14px 16px', marginBottom: 8 } as any}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 } as any}>
+              <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900] } as any}>Client Phone</span>
+            </div>
+            <span style={{ fontFamily: F, fontSize: 13, color: colors.primary[500], display: 'block' } as any}>{job.clientPhone}</span>
+          </div>
+
+          {/* Notes card (if present) */}
           {job.notes ? (
-            <>
-              <div style={{ height: 1, backgroundColor: '#EFF2F7' } as any} />
-              <InfoRow icon={<NoteIcon color={colors.gray[500]} />} label="Notes" value={job.notes} />
-            </>
+            <div style={{ backgroundColor: '#FFFFFF', borderRadius: 16, padding: '14px 16px', marginBottom: 8 } as any}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 } as any}>
+                <span style={{ fontFamily: F, fontSize: 15, fontWeight: 600, color: colors.gray[900] } as any}>Notes</span>
+              </div>
+              <span style={{ fontFamily: F, fontSize: 13, color: colors.gray[500], display: 'block' } as any}>{job.notes}</span>
+            </div>
           ) : null}
-        </div>
-
-        {/* Rating card */}
-        <div style={{
-          backgroundColor: '#FFFFFF', borderRadius: 16, padding: 20, marginBottom: 12,
-          animation: 'fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.18s both',
-        } as any}>
-          <span style={{ fontFamily: F, fontSize: 13, fontWeight: 600, color: colors.gray[400], display: 'block', marginBottom: 10 } as any}>
-            Client Rating
-          </span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 } as any}>
-            <StarIcon color={colors.warning[500]} size={22} />
-            <span style={{ fontFamily: F, fontSize: 28, fontWeight: 800, color: colors.gray[900], letterSpacing: -0.5 } as any}>
-              {job.rating}
-            </span>
-            <span style={{ fontFamily: F, fontSize: 14, color: colors.gray[400], marginLeft: 4 } as any}>/ 5.0</span>
-          </div>
         </div>
 
         <div style={{ height: 48 } as any} />
