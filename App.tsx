@@ -70,7 +70,6 @@ import { HelpSupportScreen } from './src/screens/profile/HelpSupportScreen';
 import { LegalScreen } from './src/screens/profile/LegalScreen';
 import { SignOutModal } from './src/screens/profile/SignOutModal';
 import { CompanyInfoScreen } from './src/screens/profile/CompanyInfoScreen';
-import { ReportsExportScreen } from './src/screens/profile/ReportsExportScreen';
 import { ThemeProvider } from './src/design-system/ThemeContext';
 import { ContractSigningScreen } from './src/screens/contract/ContractSigningScreen';
 import { ContractsListScreen } from './src/screens/contract/ContractsListScreen';
@@ -126,8 +125,7 @@ type Screen =
   | 'schedule'
   | 'contracts'
   | 'contractSigning'
-  | 'companyInfo'
-  | 'reportsExport';
+  | 'companyInfo';
 
 // Screen order for determining slide direction
 const SCREEN_ORDER: Screen[] = [
@@ -1376,7 +1374,7 @@ export default function App() {
                   paymentMethods: 'paymentMethods',
                   savedAddresses: 'savedAddresses',
                   moveHistory: 'moveHistory',
-                  reportsExport: 'reportsExport',
+
                   contracts: 'contracts',
                   notifications: 'notifications',
                   helpSupport: 'helpSupport',
@@ -1446,12 +1444,6 @@ export default function App() {
             ]}
             onBack={() => navigateTo('profile')}
             role={userRole || undefined}
-          />
-        );
-      case 'reportsExport':
-        return (
-          <ReportsExportScreen
-            onBack={() => navigateTo('profile')}
           />
         );
       case 'notifications':

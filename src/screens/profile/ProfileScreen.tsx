@@ -36,8 +36,7 @@ export type ProfileMenuItem =
   | 'helpSupport'
   | 'legal'
   | 'signOut'
-  | 'companyInfo'
-  | 'reportsExport';
+  | 'companyInfo';
 
 interface ProfileScreenProps {
   userName: string;
@@ -113,12 +112,6 @@ const BuildingIcon = () => (
   </svg>
 );
 
-const DownloadIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-    <path d="M12 3V15M12 15L7 10M12 15L17 10" stroke={ic} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M3 17V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V17" stroke={ic} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
 
 const LogOutIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -227,9 +220,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                 {role !== 'mover' && (
                   <MenuRow icon={<ClockIcon />} label="Move History" onPress={() => onMenuPress('moveHistory')} />
                 )}
-                {role === 'ceo' && (
-                  <MenuRow icon={<DownloadIcon />} label="Reports & Export" onPress={() => onMenuPress('reportsExport')} />
-                )}
+
                 <MenuRow icon={<ContractIcon />} label="My Contracts" onPress={() => onMenuPress('contracts')} />
                 <MenuRow icon={<BellIcon />} label="Notification Settings" onPress={() => onMenuPress('notifications')} />
                 <MenuRow icon={<HeadphonesIcon />} label="Help & Support" onPress={() => onMenuPress('helpSupport')} />
@@ -263,9 +254,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                 {role !== 'mover' && (
                   <MenuRow icon={<ClockIcon />} label="Move History" onPress={() => onMenuPress('moveHistory')} />
                 )}
-                {role === 'ceo' && (
-                  <MenuRow icon={<DownloadIcon />} label="Reports & Export" onPress={() => onMenuPress('reportsExport')} />
-                )}
+
                 <MenuRow icon={<ContractIcon />} label="My Contracts" onPress={() => onMenuPress('contracts')} />
                 <MenuRow icon={<BellIcon />} label="Notification Settings" onPress={() => onMenuPress('notifications')} />
                 <MenuRow icon={<HeadphonesIcon />} label="Help & Support" onPress={() => onMenuPress('helpSupport')} />
