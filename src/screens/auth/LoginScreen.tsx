@@ -121,35 +121,30 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   const [showPassword, setShowPassword] = useState(false);
 
   // Email validation
-  const validateEmail = (value: string): boolean => {
-    if (!value.trim()) return true; // empty is not an error (just disabled button)
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isValidEmail = (value: string): boolean => {
+    const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(value.trim());
   };
 
   const handleEmailChange = (text: string) => {
     setEmail(text);
-    if (emailTouched) {
-      if (!text.trim()) {
-        setEmailError('');
-      } else if (!validateEmail(text)) {
-        setEmailError('Enter a valid email address');
-      } else {
-        setEmailError('');
-      }
+    if (emailTouched && text.trim()) {
+      setEmailError(isValidEmail(text) ? '' : 'Enter a valid email address');
+    } else {
+      setEmailError('');
     }
   };
 
   const handleEmailBlur = () => {
     setEmailTouched(true);
-    if (email.trim() && !validateEmail(email)) {
+    if (email.trim() && !isValidEmail(email)) {
       setEmailError('Enter a valid email address');
     } else {
       setEmailError('');
     }
   };
 
-  const isValid = email.trim().length > 0 && password.trim().length > 0 && !emailError && validateEmail(email);
+  const isValid = email.trim().length > 0 && password.trim().length > 0 && !emailError && isValidEmail(email);
 
   const handleLogin = () => {
     if (!isValid) return;
@@ -191,7 +186,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               keyboardType="email-address"
               autoCapitalize="none"
               error={emailError || undefined}
-              required
             />
 
             <View style={styles.spacer} />
@@ -202,7 +196,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
-              required
               rightElement={
                 Platform.OS === 'web' ? (
                   <div

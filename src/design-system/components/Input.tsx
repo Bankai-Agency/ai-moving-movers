@@ -93,94 +93,95 @@ export const Input: React.FC<InputProps> = ({
             position: 'relative',
             borderRadius: 12,
             paddingLeft: 16,
-            paddingRight: 16,
+            paddingRight: rightElement ? 8 : 16,
             height: 62,
             display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
+            flexDirection: 'row',
+            alignItems: 'center',
             backgroundColor: bgColor,
             borderWidth: 1,
             borderStyle: 'solid',
             borderColor: error ? colors.error[500] : isFocused ? colors.primary[500] : 'transparent',
             transition: 'border-color 200ms ease',
             boxSizing: 'border-box',
-            overflow: 'hidden',
           } as any}
         >
-          {/* Animated floating label */}
-          {label && (
-            <span
+          {/* Left side: label + input */}
+          <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden' } as any}>
+            {/* Animated floating label */}
+            {label && (
+              <span
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: isActive ? 12 : 21,
+                  fontFamily: 'Inter, system-ui, sans-serif',
+                  fontSize: isActive ? 12 : 16,
+                  fontWeight: isActive ? 500 : 400,
+                  lineHeight: isActive ? '14px' : '19px',
+                  color: PLACEHOLDER_COLOR,
+                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+                  pointerEvents: 'none',
+                  whiteSpace: 'nowrap',
+                } as any}
+              >
+                {label}{required && <span style={{ color: colors.error[500], marginLeft: 2 } as any}>*</span>}
+              </span>
+            )}
+
+            {/* Input — nudged down when label floats */}
+            <div
               style={{
-                position: 'absolute',
-                left: 16,
-                top: isActive ? 12 : 21,
-                fontFamily: 'Inter, system-ui, sans-serif',
-                fontSize: isActive ? 12 : 16,
-                fontWeight: isActive ? 500 : 400,
-                lineHeight: isActive ? '14px' : '19px',
-                color: PLACEHOLDER_COLOR,
-                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-                pointerEvents: 'none',
-                whiteSpace: 'nowrap',
+                paddingTop: label && isActive ? 14 : 0,
+                transition: 'padding-top 200ms cubic-bezier(0.4, 0, 0.2, 1)',
               } as any}
             >
-              {label}{required && <span style={{ color: colors.error[500], marginLeft: 2 } as any}>*</span>}
-            </span>
-          )}
-
-          {/* Input — nudged down when label floats */}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingTop: label && isActive ? 14 : 0,
-              transition: 'padding-top 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-            } as any}
-          >
-            <input
-              type={rest.secureTextEntry ? 'password' : rest.keyboardType === 'email-address' ? 'email' : 'text'}
-              inputMode={rest.keyboardType === 'number-pad' ? 'numeric' : undefined}
-              placeholder={webDisplayPlaceholder}
-              disabled={disabled}
-              value={value || ''}
-              onChange={(e: any) => {
-                let raw = e.target.value;
-                if (rest.keyboardType === 'number-pad') {
-                  raw = raw.replace(/[^0-9]/g, '');
-                }
-                const limited = rest.maxLength ? raw.slice(0, rest.maxLength) : raw;
-                setInternalValue(limited);
-                onChangeText?.(limited);
-              }}
-              onFocus={(e: any) => {
-                setIsFocused(true);
-                onFocus?.(e);
-              }}
-              onBlur={(e: any) => {
-                setIsFocused(false);
-                onBlur?.(e);
-              }}
-              style={{
-                flex: 1,
-                fontFamily: 'Inter, system-ui, sans-serif',
-                fontSize: 16,
-                lineHeight: '19px',
-                fontWeight: 400,
-                padding: 0,
-                border: 'none',
-                outline: 'none',
-                background: 'transparent',
-                color: disabled ? colors.gray[400] : TEXT_COLOR,
-                height: 19,
-              } as any}
-            />
-            {rightElement && (
-              <div style={{ marginLeft: 8, display: 'flex', alignItems: 'center', flexShrink: 0 } as any}>
-                {rightElement}
-              </div>
-            )}
+              <input
+                type={rest.secureTextEntry ? 'password' : rest.keyboardType === 'email-address' ? 'email' : 'text'}
+                inputMode={rest.keyboardType === 'number-pad' ? 'numeric' : undefined}
+                placeholder={webDisplayPlaceholder}
+                disabled={disabled}
+                value={value || ''}
+                onChange={(e: any) => {
+                  let raw = e.target.value;
+                  if (rest.keyboardType === 'number-pad') {
+                    raw = raw.replace(/[^0-9]/g, '');
+                  }
+                  const limited = rest.maxLength ? raw.slice(0, rest.maxLength) : raw;
+                  setInternalValue(limited);
+                  onChangeText?.(limited);
+                }}
+                onFocus={(e: any) => {
+                  setIsFocused(true);
+                  onFocus?.(e);
+                }}
+                onBlur={(e: any) => {
+                  setIsFocused(false);
+                  onBlur?.(e);
+                }}
+                style={{
+                  width: '100%',
+                  fontFamily: 'Inter, system-ui, sans-serif',
+                  fontSize: 16,
+                  lineHeight: '19px',
+                  fontWeight: 400,
+                  padding: 0,
+                  border: 'none',
+                  outline: 'none',
+                  background: 'transparent',
+                  color: disabled ? colors.gray[400] : TEXT_COLOR,
+                  height: 19,
+                } as any}
+              />
+            </div>
           </div>
+
+          {/* Right element — centered vertically in the full field */}
+          {rightElement && (
+            <div style={{ marginLeft: 4, display: 'flex', alignItems: 'center', flexShrink: 0 } as any}>
+              {rightElement}
+            </div>
+          )}
         </div>
 
         {error && (
