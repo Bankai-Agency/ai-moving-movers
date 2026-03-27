@@ -204,8 +204,10 @@ export const PhoneInputScreen: React.FC<PhoneInputScreenProps> = ({
     setDigits(prev => prev.slice(0, -1));
   };
 
+  const isComplete = digits.length === MAX_DIGITS;
+
   const handleSendCode = () => {
-    if (digits.length > 0) {
+    if (isComplete) {
       onSendCode('+' + digits);
     }
   };
@@ -289,7 +291,7 @@ export const PhoneInputScreen: React.FC<PhoneInputScreenProps> = ({
               title="Send Code"
               variant="primary"
               onPress={handleSendCode}
-              disabled={digits.length === 0}
+              disabled={!isComplete}
             />
           </View>
 
