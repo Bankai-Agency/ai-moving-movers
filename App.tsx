@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Animated, Dimensions, View, StyleSheet, Platform } from 'react-native';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { LoginScreen } from './src/screens/auth/LoginScreen';
 import { PhoneInputScreen } from './src/screens/auth/PhoneInputScreen';
 import { OTPScreen } from './src/screens/auth/OTPScreen';
@@ -1634,6 +1635,7 @@ export default function App() {
           />
         </View>
       </DesktopLayout>
+      <SpeedInsights />
     </ThemeProvider>
   );
 }
