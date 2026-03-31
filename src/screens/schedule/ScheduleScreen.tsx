@@ -245,8 +245,20 @@ export const ScheduleScreen: React.FC<ScheduleScreenProps> = ({
 
   const allDays = getMonthDays(viewYear, viewMonth);
   const selectedKey = formatDateKey(selectedDate);
-  const dayMoves = movesByDate[selectedKey] || [];
-  const activeMove = dayMoves.find(m => m.status === 'in_progress');
+
+  // Enforce statuses based on date:
+  // Past days → all completed, Future days → all upcoming, Today → keep original
+  const rawMoves = movesByDate[selectedKey] || [];
+  const isTodaySelected = isSameDay(selectedDate, today);
+  const isPast = selectedDate < today && !isTodaySelected;
+  const isFuture = selectedDate > today && !isTodaySelected;
+
+  const dayMoves: ScheduleMove[] = rawMoves.map(m => {
+    if (isPast) return { ...m, status: 'completed' as MoveStatus, step: 'completed' as MoveStep };
+    if (isFuture) return { ...m, status: 'upcoming' as MoveStatus, step: undefined };
+    return m; // today — keep original status
+  });
+  const activeMove = isTodaySelected ? dayMoves.find(m => m.status === 'in_progress') : undefined;
 
   const selectedMonth = MONTH_NAMES[viewMonth];
 
