@@ -272,18 +272,46 @@ export const ScheduleScreen: React.FC<ScheduleScreenProps> = ({
   };
 
   // Scroll calendar to show selected day (or today) centered
+  const scrollAttemptRef = useRef(0);
   useEffect(() => {
-    const raf = requestAnimationFrame(() => {
-      if (!calendarRef.current) return;
+    scrollAttemptRef.current += 1;
+    const attempt = scrollAttemptRef.current;
+
+    const doScroll = () => {
+      if (attempt !== scrollAttemptRef.current) return; // stale
+      const el = calendarRef.current;
+      if (!el) return;
+
+      // Measure actual children to find exact offset
+      const children = el.children;
       const target = allDays.findIndex(d => isSameDay(d, selectedDate));
       if (target < 0) return;
-      // Each day chip: minWidth 48 + gap 6 = 54px per item
-      const itemWidth = 54;
-      const containerWidth = calendarRef.current.clientWidth || 350;
-      const scrollX = Math.max(0, target * itemWidth - containerWidth / 2 + itemWidth / 2);
-      calendarRef.current.scrollTo?.({ left: scrollX, behavior: 'smooth' });
+
+      // Find the target child element's position
+      const child = children[target] as HTMLElement | undefined;
+      if (child) {
+        const childLeft = child.offsetLeft;
+        const childWidth = child.offsetWidth;
+        const containerWidth = el.clientWidth;
+        const scrollX = Math.max(0, childLeft - containerWidth / 2 + childWidth / 2);
+        el.scrollTo({ left: scrollX, behavior: 'auto' });
+      } else {
+        // Fallback: estimate
+        const itemWidth = 54;
+        const containerWidth = el.clientWidth || 350;
+        const scrollX = Math.max(0, 20 + target * itemWidth - containerWidth / 2 + itemWidth / 2);
+        el.scrollTo({ left: scrollX, behavior: 'auto' });
+      }
+    };
+
+    // Use double-rAF to ensure layout is complete, then a short timeout as safety net
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        doScroll();
+      });
     });
-    return () => cancelAnimationFrame(raf);
+    const timer = setTimeout(doScroll, 150);
+    return () => clearTimeout(timer);
   }, [viewMonth, viewYear]);
 
   if (Platform.OS !== 'web') {
