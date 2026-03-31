@@ -278,13 +278,13 @@ export default function App() {
 
   const [activeMove, setActiveMove] = useState<ActiveMove | null>({
     id: 'move1',
-    client: 'Sarah Johnson',
-    from: '123 Main St, Brooklyn',
-    to: '456 Park Ave, Manhattan',
-    date: 'Mar 8',
-    time: '10:00 AM',
-    rooms: 3,
-    price: 1200,
+    client: 'David Kim',
+    from: '100 W 72nd St, Manhattan',
+    to: '250 Bedford Ave, Brooklyn',
+    date: 'Today',
+    time: '11:00 AM',
+    rooms: 2,
+    price: 950,
     step: 'accepted',
   });
 
@@ -379,61 +379,42 @@ export default function App() {
   const activeMoveDetail: MoveDetailData | null = activeMove ? {
     ...activeMove,
     roomsCount: activeMove.rooms,
-    clientPhone: '+1 (555) 234-5678',
-    clientEmail: 'sarah.j@email.com',
-    fromApt: '4B',
-    fromFloor: '4',
-    fromElevator: true,
-    toApt: '12A',
-    toFloor: '12',
+    clientPhone: '+1 (212) 555-0305',
+    clientEmail: 'david.kim@email.com',
+    fromApt: '5C',
+    fromFloor: '5',
+    fromElevator: false,
+    toApt: '2A',
+    toFloor: '2',
     toElevator: true,
-    distance: '12.4 mi',
-    estimatedTime: '~35 min',
-    totalVolume: '380 cu ft',
-    totalItems: 47,
+    distance: '7.1 mi',
+    estimatedTime: '~25 min',
+    totalVolume: '220 cu ft',
+    totalItems: 21,
     rooms: [
       { name: 'Living Room', items: [
-        { name: 'Sofa (3-seater)', qty: 1, tag: 'Large' },
+        { name: 'Sofa (2-seater)', qty: 1, tag: 'Large' },
         { name: 'Coffee Table', qty: 1 },
+        { name: 'TV 50"', qty: 1, tag: 'Fragile' },
         { name: 'TV Stand', qty: 1 },
-        { name: 'TV 55"', qty: 1, tag: 'Fragile' },
-        { name: 'Bookshelf', qty: 1, tag: 'Large' },
-        { name: 'Floor Lamp', qty: 2 },
-        { name: 'Boxes (misc.)', qty: 4 },
+        { name: 'Floor Lamp', qty: 1 },
+        { name: 'Boxes (misc.)', qty: 5 },
       ]},
       { name: 'Bedroom', items: [
         { name: 'Queen Bed Frame', qty: 1, tag: 'Large' },
         { name: 'Mattress (Queen)', qty: 1, tag: 'Large' },
-        { name: 'Nightstand', qty: 2 },
+        { name: 'Nightstand', qty: 1 },
         { name: 'Dresser', qty: 1, tag: 'Large' },
-        { name: 'Mirror', qty: 1, tag: 'Fragile' },
-        { name: 'Boxes (clothes)', qty: 5 },
-      ]},
-      { name: 'Kitchen', items: [
-        { name: 'Dining Table', qty: 1, tag: 'Large' },
-        { name: 'Dining Chairs', qty: 4 },
-        { name: 'Microwave', qty: 1 },
-        { name: 'Boxes (kitchenware)', qty: 6, tag: 'Fragile' },
-      ]},
-      { name: 'Bathroom', items: [
-        { name: 'Storage Cabinet', qty: 1 },
-        { name: 'Boxes (toiletries)', qty: 2 },
-      ]},
-      { name: 'Office', items: [
-        { name: 'Desk', qty: 1, tag: 'Large' },
-        { name: 'Office Chair', qty: 1 },
-        { name: 'Monitor 27"', qty: 1, tag: 'Fragile' },
-        { name: 'Printer', qty: 1 },
-        { name: 'Boxes (books & docs)', qty: 4 },
+        { name: 'Boxes (clothes)', qty: 4 },
+        { name: 'Boxes (books)', qty: 3 },
       ]},
     ],
     specialItems: [
-      { name: 'Piano', quantity: 1, note: 'Grand piano — needs 3 people' },
-      { name: 'Large Mirror', quantity: 2, note: 'Fragile, wrap carefully' },
-      { name: 'Aquarium', quantity: 1, note: '55 gallon, drain before move' },
+      { name: 'Large Mirror', quantity: 1, note: 'Fragile, wrap carefully' },
+      { name: 'Guitar Case', quantity: 1, note: 'Handle with care' },
     ],
-    depositPaid: 240,
-    notes: 'Please be careful with the antique dresser in the bedroom. The dog will be in the bathroom during the move. Ring doorbell on arrival.',
+    depositPaid: 190,
+    notes: 'No elevator at pickup — 5th floor walk-up. Please bring extra blankets for the mirror. Buzzer code: 5C#.',
     planName: 'Standard',
   } : null;
 
@@ -445,10 +426,10 @@ export default function App() {
   ];
 
   const mockOrders: MoverOrder[] = [
-    { id: 'o1', client: 'Sarah Johnson', from: '123 Main St, Brooklyn', to: '456 Park Ave, Manhattan', date: 'Mar 8', status: 'inProgress', earnings: 1200, planName: 'Standard', distance: '11.3 mi', volume: '380 cu ft' },
-    { id: 'o2', client: 'David Kim', from: '789 Broadway, Manhattan', to: '321 Court St, Brooklyn', date: 'Mar 10', status: 'accepted', earnings: 950, planName: 'Standard', distance: '5.8 mi', volume: '220 cu ft' },
-    { id: 'o3', client: 'Lisa Thompson', from: '44 Wall St, Manhattan', to: '55 Water St, Brooklyn', date: 'Feb 28', status: 'completed', earnings: 1100, planName: 'Premium', distance: '9.4 mi', volume: '510 cu ft' },
-    { id: 'o4', client: 'James Brown', from: '100 W 72nd St, Manhattan', to: '250 Bedford Ave, Brooklyn', date: 'Feb 20', status: 'completed', earnings: 780, planName: 'Standard', distance: '7.1 mi', volume: '180 cu ft' },
+    { id: 'o1', client: 'David Kim', from: '100 W 72nd St, Manhattan', to: '250 Bedford Ave, Brooklyn', date: 'Today', status: 'inProgress', earnings: 950, planName: 'Standard', distance: '7.1 mi', volume: '220 cu ft' },
+    { id: 'o2', client: 'Sarah Johnson', from: '123 Main St, Brooklyn', to: '456 Park Ave, Manhattan', date: dayKey(-3).slice(5).replace('-', '/'), status: 'completed', earnings: 1200, planName: 'Standard', distance: '11.3 mi', volume: '380 cu ft' },
+    { id: 'o3', client: 'Lisa Thompson', from: '44 Wall St, Manhattan', to: '55 Water St, Brooklyn', date: dayKey(-4).slice(5).replace('-', '/'), status: 'completed', earnings: 1100, planName: 'Premium', distance: '9.4 mi', volume: '510 cu ft' },
+    { id: 'o4', client: 'Anna Lee', from: '350 5th Ave, Midtown', to: '180 Montague St, Brooklyn Heights', date: dayKey(1).slice(5).replace('-', '/'), status: 'accepted', earnings: 1350, planName: 'Standard', distance: '10.5 mi', volume: '340 cu ft' },
   ];
 
   // ── Schedule mock data (keyed by YYYY-MM-DD) ──
@@ -601,18 +582,18 @@ export default function App() {
   // Build chat contacts from active orders (mover talks to clients)
   const chatContacts: ChatContact[] = [
     {
-      id: 'c-sarah',
-      name: 'Sarah Johnson',
+      id: 'c-david',
+      name: 'David Kim',
       lastMessage: 'Will you arrive on time?',
       time: '11:42 AM',
       unread: 2,
       online: true,
     },
     {
-      id: 'c-david',
-      name: 'David Kim',
-      lastMessage: 'Great, see you on the 10th!',
-      time: 'Yesterday',
+      id: 'c-sarah',
+      name: 'Sarah Johnson',
+      lastMessage: 'Thanks for the great job!',
+      time: dayKey(-3).slice(5).replace('-', '/'),
       unread: 0,
       online: false,
     },
@@ -628,11 +609,11 @@ export default function App() {
 
   const DEMO_MESSAGES: ChatMessage[] = [
     { id: 'm1', text: 'Hi! I saw you accepted my move request. When can I expect you?', fromMe: false, time: '11:30 AM' },
-    { id: 'm2', text: 'Hello Sarah! We\'ll be there at 10 AM sharp with a 3-person crew.', fromMe: true, time: '11:32 AM' },
+    { id: 'm2', text: 'Hello David! We\'ll be there at 11 AM with a 2-person crew.', fromMe: true, time: '11:32 AM' },
     { id: 'm3', text: 'Should I have everything boxed up by then?', fromMe: false, time: '11:35 AM' },
     { id: 'm4', text: 'That would be great! Label any fragile items and we\'ll take care of the rest.', fromMe: true, time: '11:37 AM' },
-    { id: 'm5', text: 'Perfect. What about the piano? It\'s pretty heavy.', fromMe: false, time: '11:39 AM' },
-    { id: 'm6', text: 'No worries — we have specialized equipment for that. We\'ll wrap and strap it properly.', fromMe: true, time: '11:40 AM' },
+    { id: 'm5', text: 'Got it. Just a heads up — it\'s a 5th floor walk-up, no elevator.', fromMe: false, time: '11:39 AM' },
+    { id: 'm6', text: 'No problem — we\'re prepared for that. We\'ll bring extra padding for the mirror too.', fromMe: true, time: '11:40 AM' },
     { id: 'm7', text: 'Will you arrive on time?', fromMe: false, time: '11:42 AM' },
   ];
 
