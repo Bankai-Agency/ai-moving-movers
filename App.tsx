@@ -452,24 +452,35 @@ export default function App() {
   ];
 
   // ── Schedule mock data (keyed by YYYY-MM-DD) ──
-  // Active move syncs its step from the main activeMove state
+  // Dates are dynamic relative to today so the calendar always looks correct
+  const dayKey = (offset: number) => {
+    const d = new Date();
+    d.setDate(d.getDate() + offset);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+
   const mockScheduleMoves: Record<string, ScheduleMove[]> = {
-    '2026-03-20': [
+    // 4 days ago
+    [dayKey(-4)]: [
+      { id: 's7', client: 'Lisa Thompson', from: '44 Wall St, Manhattan', to: '55 Water St, Brooklyn', time: '10:00 AM', rooms: 3, estimatedHours: 4, status: 'completed', floor: 6, elevator: true, distance: '9.4 mi' },
+    ],
+    // 3 days ago
+    [dayKey(-3)]: [
       {
         id: 's1', client: 'Sarah Johnson', from: '123 Main St, Brooklyn', to: '456 Park Ave, Manhattan',
-        time: '10:00 AM', rooms: 3, estimatedHours: 4,
-        status: 'completed',
-        phone: '+1 (212) 555-0142',
-        floor: 3, elevator: true, distance: '11.3 mi',
+        time: '10:00 AM', rooms: 3, estimatedHours: 4, status: 'completed',
+        phone: '+1 (212) 555-0142', floor: 3, elevator: true, distance: '11.3 mi',
       },
       { id: 's2', client: 'Mike Rivera', from: '789 Broadway, Manhattan', to: '321 Court St, Brooklyn', time: '3:00 PM', rooms: 2, estimatedHours: 2.5, status: 'completed', phone: '+1 (718) 555-0198', floor: 2, elevator: true, distance: '5.8 mi' },
     ],
-    '2026-03-21': [
+    // 2 days ago — busy day
+    [dayKey(-2)]: [
       { id: 's3', client: 'Emily Chen', from: '88 Warren St, Tribeca', to: '412 Atlantic Ave, Park Slope', time: '9:00 AM', rooms: 2, estimatedHours: 3, status: 'completed', phone: '+1 (917) 555-0167', floor: 3, elevator: false, distance: '8.2 mi' },
       { id: 's4', client: 'Marcus Williams', from: '205 W 95th St, UWS', to: '1100 Grand Concourse, Bronx', time: '1:00 PM', rooms: 4, estimatedHours: 5, status: 'completed', phone: '+1 (347) 555-0213', floor: 8, elevator: true, distance: '14.7 mi' },
       { id: 's5', client: 'Priya Patel', from: '56-12 Queens Blvd', to: '320 E 54th St, Midtown', time: '6:00 PM', rooms: 1, estimatedHours: 1.5, status: 'completed', phone: '+1 (646) 555-0089', floor: 1, elevator: true, distance: '6.1 mi' },
     ],
-    '2026-03-23': [
+    // TODAY — active move
+    [dayKey(0)]: [
       {
         id: 's6', client: 'David Kim', from: '100 W 72nd St, Manhattan', to: '250 Bedford Ave, Brooklyn',
         time: '11:00 AM', rooms: 2, estimatedHours: 3,
@@ -479,12 +490,19 @@ export default function App() {
         floor: 5, elevator: false, distance: '7.1 mi',
       },
     ],
-    '2026-03-19': [
-      { id: 's7', client: 'Lisa Thompson', from: '44 Wall St, Manhattan', to: '55 Water St, Brooklyn', time: '10:00 AM', rooms: 3, estimatedHours: 4, status: 'completed', floor: 6, elevator: true, distance: '9.4 mi' },
-    ],
-    '2026-03-24': [
+    // Tomorrow
+    [dayKey(1)]: [
       { id: 's8', client: 'Anna Lee', from: '350 5th Ave, Midtown', to: '180 Montague St, Brooklyn Heights', time: '9:30 AM', rooms: 3, estimatedHours: 4, status: 'upcoming', phone: '+1 (917) 555-0411', floor: 12, elevator: true, distance: '10.5 mi' },
       { id: 's9', client: 'Tom Harris', from: '55 Prospect Park W', to: '401 E 60th St, UES', time: '2:00 PM', rooms: 1, estimatedHours: 2, status: 'upcoming', phone: '+1 (646) 555-0322', floor: 4, elevator: false, distance: '8.8 mi' },
+    ],
+    // 3 days from now
+    [dayKey(3)]: [
+      { id: 's10', client: 'Rachel Green', from: '90 Bedford St, West Village', to: '550 Grand St, Williamsburg', time: '10:00 AM', rooms: 2, estimatedHours: 3, status: 'upcoming', phone: '+1 (212) 555-0488', floor: 4, elevator: false, distance: '5.3 mi' },
+    ],
+    // 5 days from now
+    [dayKey(5)]: [
+      { id: 's11', client: 'James Wilson', from: '200 E 82nd St, UES', to: '45 Main St, DUMBO', time: '8:00 AM', rooms: 4, estimatedHours: 5, status: 'upcoming', phone: '+1 (646) 555-0177', floor: 10, elevator: true, distance: '12.1 mi' },
+      { id: 's12', client: 'Sophie Martinez', from: '33 Greenwich Ave', to: '150 4th Ave, Park Slope', time: '2:30 PM', rooms: 1, estimatedHours: 2, status: 'upcoming', phone: '+1 (917) 555-0299', floor: 2, elevator: true, distance: '6.7 mi' },
     ],
   };
 
