@@ -66,6 +66,9 @@ interface ScheduleScreenProps {
   contractPending?: boolean;
   onSignContract?: () => void;
   role?: 'mover' | 'sales' | 'ceo';
+  /** Persist selected date across navigation */
+  initialDate?: Date;
+  onDateChange?: (date: Date) => void;
 }
 
 /* ═══════════════════════════════════════════
@@ -225,12 +228,20 @@ export const ScheduleScreen: React.FC<ScheduleScreenProps> = ({
   contractPending,
   onSignContract,
   role,
+  initialDate,
+  onDateChange,
 }) => {
-  const today = new Date();
-  const [selectedDate, setSelectedDate] = useState(today);
-  const [viewMonth, setViewMonth] = useState(today.getMonth());
-  const [viewYear, setViewYear] = useState(today.getFullYear());
+  const today = useRef(new Date()).current;
+  const startDate = initialDate || today;
+  const [selectedDate, setSelectedDate] = useState(startDate);
+  const [viewMonth, setViewMonth] = useState(startDate.getMonth());
+  const [viewYear, setViewYear] = useState(startDate.getFullYear());
   const calendarRef = useRef<HTMLDivElement>(null);
+
+  const handleSelectDate = (d: Date) => {
+    setSelectedDate(d);
+    onDateChange?.(d);
+  };
 
   const allDays = getMonthDays(viewYear, viewMonth);
   const selectedKey = formatDateKey(selectedDate);
@@ -248,16 +259,19 @@ export const ScheduleScreen: React.FC<ScheduleScreenProps> = ({
     else { setViewMonth(m => m + 1); }
   };
 
-  // Scroll calendar to show today / selected day on mount or month change
+  // Scroll calendar to show selected day (or today) centered
   useEffect(() => {
-    setTimeout(() => {
+    const raf = requestAnimationFrame(() => {
       if (!calendarRef.current) return;
-      const todayIdx = allDays.findIndex(d => isSameDay(d, selectedDate));
-      if (todayIdx >= 0) {
-        const scrollX = Math.max(0, todayIdx * 58 - 120);
-        calendarRef.current.scrollTo?.({ left: scrollX, behavior: 'smooth' });
-      }
-    }, 100);
+      const target = allDays.findIndex(d => isSameDay(d, selectedDate));
+      if (target < 0) return;
+      // Each day chip: minWidth 48 + gap 6 = 54px per item
+      const itemWidth = 54;
+      const containerWidth = calendarRef.current.clientWidth || 350;
+      const scrollX = Math.max(0, target * itemWidth - containerWidth / 2 + itemWidth / 2);
+      calendarRef.current.scrollTo?.({ left: scrollX, behavior: 'smooth' });
+    });
+    return () => cancelAnimationFrame(raf);
   }, [viewMonth, viewYear]);
 
   if (Platform.OS !== 'web') {
@@ -358,7 +372,7 @@ export const ScheduleScreen: React.FC<ScheduleScreenProps> = ({
             return (
               <Pressable
                 key={key}
-                onPress={() => setSelectedDate(d)}
+                onPress={() => handleSelectDate(d)}
                 style={{ alignItems: 'center' }}
               >
                 <div style={{
